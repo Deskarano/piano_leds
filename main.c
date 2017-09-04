@@ -94,13 +94,14 @@ int main()
         led_string.channel[0].leds[i] = 0;
     }
 
-    int keys_pressed[LED_COUNT];
-    int keys_to_sustain[LED_COUNT];
+    int sustain = 0;
+    int key_pressed[LED_COUNT];
+    int key_sustain[LED_COUNT];
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        keys_pressed[i] = 0;
-        keys_to_sustain[i] = 0;
+        key_pressed[i] = 0;
+        key_sustain[i] = 0;
     }
 
     unsigned char buffer[2];
@@ -122,11 +123,17 @@ int main()
                     if(buffer[1] > 0)
                     {
                         led_string.channel[0].leds[buffer[0] - 21] = color;
-                        keys_pressed[buffer[0] - 21] = 1;
+                        key_pressed[buffer[0] - 21] = 1;
+                        key_sustain[buffer[0] - 21] = 1;
                     }
                     else
                     {
-                        keys_pressed[buffer[0] - 21] = 0;
+                        key_pressed[buffer[0] - 21] = 0;
+
+                        if(!sustain)
+                        {
+                            key_sustain[buffer[0] - 21] = 0;
+                        }
                     }
                 }
 
@@ -136,17 +143,22 @@ int main()
 
                     if(buffer[1] > 0)
                     {
-                        for(int i = 0; i < LED_COUNT; i++)
-                        {
-                            if(keys_pressed[i]) keys_to_sustain[i] = 1;
-                        }
+                        sustain = 1;
                     }
                     else
                     {
-                        for(int i = 0; i < LED_COUNT; i++)
-                        {
-                            if(!keys_pressed[i]) keys_to_sustain[i] = 0;
-                        }
+                        sustain = 0;
+                    }
+                }
+            }
+
+            if(!sustain)
+            {
+                for(int i = 0; i < LED_COUNT; i++)
+                {
+                    if(key_pressed[i] == 0 && key_sustain[i] == 1)
+                    {
+                        key_sustain[i] = 0;
                     }
                 }
             }
@@ -154,7 +166,7 @@ int main()
 
         for(int i = 0; i < LED_COUNT; i++)
         {
-            if(!(keys_to_sustain[i]))
+            if(!(key_sustain[i]))
             {
                 led_string.channel[0].leds[i] = 0;
             }
