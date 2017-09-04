@@ -158,19 +158,20 @@ int main()
                 {
                     if(key_pressed[i] == 0 && key_sustain[i] == 1)
                     {
+			printf("setting key_sustain[%i] to 0\n", i);
                         key_sustain[i] = 0;
                     }
                 }
             }
         }
 
-        for(int i = 0; i < LED_COUNT; i++)
-        {
-            if(!(key_sustain[i]))
-            {
-                led_string.channel[0].leds[i] = 0;
-            }
-        }
+	for(int i = 0; i < LED_COUNT; i++)
+	{
+	    if(!(key_sustain[i]))
+	    {
+		led_string.channel[0].leds[i] = 0;
+	    }
+	}
 
         if(ws2811_render(&led_string) != WS2811_SUCCESS)
         {
