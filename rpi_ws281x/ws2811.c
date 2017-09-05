@@ -1105,6 +1105,9 @@ ws2811_return_t ws2811_render(ws2811_t *ws2811)
     uint32_t protocol_time = 0;
     static uint64_t previous_timestamp = 0;
 
+    previous_timestamp = get_microsecond_timestamp();
+    ws2811->render_wait_time = protocol_time + LED_RESET_WAIT_TIME;
+
     bitpos = (driver_mode == SPI ? 7 : 31);
 
     for(chan = 0; chan < RPI_PWM_CHANNELS; chan++)         // Channel

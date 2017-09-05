@@ -56,7 +56,9 @@ __uint32_t adjacent_color(__uint32_t color, __uint8_t new_brightness)
     b *= new_brightness;
     g *= new_brightness;
 
-    return (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
+    __uint32_t ret = (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
+
+    return ret;
 }
 
 int main()
@@ -183,11 +185,11 @@ int main()
         {
             if(!(key_sustain[i]))
             {
-                led_string.channel[0].leds[i] = 0;
+                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 128);
             }
             else
             {
-                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 225);
+                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 245);
             }
         }
 
