@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
+#include <math.h>
 
 #include <alsa/asoundlib.h>
 
@@ -43,6 +44,19 @@ void *midi_collector_thread(void *arg)
             pipe_push(producer, buffer, 1);
         }
     }
+}
+
+__uint32_t adjacent_color(__uint32_t color, __uint8_t new_brightness)
+{
+    double r = (double) (color & 0xFF) / 256;
+    double b = (double) ((color >> 8) & 0xFF) / 256;
+    double g = (double) ((color >> 16) & 0xFF) / 256;
+
+    r *= new_brightness;
+    b *= new_brightness;
+    g *= new_brightness;
+
+    return (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
 }
 
 int main()
@@ -171,10 +185,10 @@ int main()
             {
                 led_string.channel[0].leds[i] = 0;
             }
-	    else
-	    {
-		led_string.channel[0].leds[i] *= .9;
-	    }
+            else
+            {
+                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 225);
+            }
         }
 
         if(ws2811_render(&led_string) != WS2811_SUCCESS)

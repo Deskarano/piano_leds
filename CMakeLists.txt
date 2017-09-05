@@ -1,7 +1,7 @@
 project(piano_leds)
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_FLAGS "-lasound -lpthread")
+set(CMAKE_C_FLAGS "-lasound -lpthread -lm")
 
 set(SOURCE_FILES_MAIN
         main.c
