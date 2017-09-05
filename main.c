@@ -13,7 +13,7 @@
 #define STRIP_TYPE              WS2811_STRIP_GBR        // WS2812/SK6812RGB integrated chip+leds
 #define LED_COUNT               150
 
-#define UPDATES_PER_SEC         60
+#define UPDATES_PER_SEC         16
 
 typedef struct
 {
@@ -171,6 +171,10 @@ int main()
             {
                 led_string.channel[0].leds[i] = 0;
             }
+	    else
+	    {
+		led_string.channel[0].leds[i] *= .9;
+	    }
         }
 
         if(ws2811_render(&led_string) != WS2811_SUCCESS)
