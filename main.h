@@ -21,8 +21,8 @@
 __uint32_t adjacent_color(__uint32_t color, double factor)
 {
     double r = (double) (color & 0xFF) * factor;
-    double b = (double) ((color >> 8) & 0xFF) / 256 * factor;
-    double g = (double) ((color >> 16) & 0xFF) / 256 * factor;
+    double b = (double) ((color >> 8) & 0xFF) * factor;
+    double g = (double) ((color >> 16) & 0xFF) * factor;
 
     __uint32_t ret = (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
 
