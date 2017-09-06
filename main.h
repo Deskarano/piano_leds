@@ -265,7 +265,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                 }
                 else
                 {
-                    right_count;
+                    right_count++;
                 }
             }
         }
