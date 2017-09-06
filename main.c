@@ -81,11 +81,11 @@ int main()
         led_string.channel[0].leds[i] = 0;
     }
 
-    led_update_piano_normal_data *data = new_led_update_piano_normal_data();
+    led_update_piano_war_data *data = new_led_update_piano_war_data();
     led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
-    data_union->piano_normal = data;
+    data_union->piano_war = data;
 
-    led_update_function = led_update_piano_normal;
+    led_update_function = led_update_piano_war;
 
     while(1)
     {
