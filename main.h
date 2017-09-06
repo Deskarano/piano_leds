@@ -280,6 +280,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
     if(left_count > 0)
     {
+        data->piano_war->occupied[0] = 1;
         data->piano_war->colors[0] = (uint32_t) (random() % 0xFFFFFF);
         data->piano_war->direction[0] = 1;
         data->piano_war->size[0] = left_count;
@@ -287,6 +288,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
     if(right_count > 0)
     {
+        data->piano_war->occupied[LED_COUNT - 1] = 1;
         data->piano_war->colors[LED_COUNT - 1] = (uint32_t) (random() % 0xFFFFFF);
         data->piano_war->direction[LED_COUNT - 1] = -1;
         data->piano_war->size[LED_COUNT - 1] = right_count;
