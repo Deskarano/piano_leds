@@ -46,6 +46,7 @@ typedef struct
     __uint32_t colors[LED_COUNT];
     int direction[LED_COUNT];
     int size[LED_COUNT];
+    int locked[LED_COUNT];
 } led_update_piano_war_data;
 
 
@@ -79,6 +80,7 @@ led_update_piano_war_data *new_led_update_piano_war_data()
         ret->colors[i] = 0;
         ret->direction[i] = 0;
         ret->size[i] = 0;
+        ret->locked[i] = 0;
     }
 
     return ret;
@@ -163,15 +165,20 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
 void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
 {
+    //unlock all values
     for(int i = 0; i < LED_COUNT; i++)
     {
-        if(data->piano_war->occupied[i])
+        if(data->piano_war->locked[i]) data->piano_war->locked[i] = 0;
+    }
+    
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        if(data->piano_war->occupied[i] && !data->piano_war->locked[i])
         {
+            printf("pos %i is OCCUPIED\n", i);
             if((i == 0 && data->piano_war->direction[i] == -1) ||
                (i == LED_COUNT - 1 && data->piano_war->direction[i] == 1))
             {
-                printf("in border collision block for pos %i\n", i);
-
                 if(i == 0 && data->piano_war->direction[i] == -1)
                 {
                     data->piano_war->size[i]--;
@@ -235,11 +242,12 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                 }
                 else
                 {
-                    printf("in move block for pos %i\n", i);
+                    printf("in move block for pos%i\n", i);
                     data->piano_war->occupied[i + data->piano_war->direction[i]] = 1;
                     data->piano_war->colors[i + data->piano_war->direction[i]] = data->piano_war->colors[i];
                     data->piano_war->direction[i + data->piano_war->direction[i]] = data->piano_war->direction[i];
                     data->piano_war->size[i + data->piano_war->direction[i]] = data->piano_war->size[i];
+                    data->piano_war->locked[i + data->piano_war->direction[i]] = 1;
 
                     data->piano_war->occupied[i] = 0;
                     data->piano_war->colors[i] = 0;
