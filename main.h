@@ -283,6 +283,8 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
         }
     }
 
+    printf("left_count: %i\nright_count: %i\n", left_count, right_count);
+
     if(left_count > 0)
     {
         data->piano_war->colors[0] = (uint32_t) (random() % 0xFFFFFF);
