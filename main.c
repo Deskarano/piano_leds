@@ -1,20 +1,6 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <pthread.h>
-#include <math.h>
+#include "main.h"
 
-#include <alsa/asoundlib.h>
 
-#include "rpi_ws281x/ws2811.h"
-#include "pipe/pipe.h"
-
-#define TARGET_FREQ             WS2811_TARGET_FREQ
-#define GPIO_PIN                21
-#define DMA                     5
-#define STRIP_TYPE              WS2811_STRIP_GBR        // WS2812/SK6812RGB integrated chip+leds
-#define LED_COUNT               150
-
-#define UPDATES_PER_SEC         16
 
 typedef struct
 {
@@ -44,21 +30,6 @@ void *midi_collector_thread(void *arg)
             pipe_push(producer, buffer, 1);
         }
     }
-}
-
-__uint32_t adjacent_color(__uint32_t color, __uint8_t new_brightness)
-{
-    double r = (double) (color & 0xFF) / 256;
-    double b = (double) ((color >> 8) & 0xFF) / 256;
-    double g = (double) ((color >> 16) & 0xFF) / 256;
-
-    r *= new_brightness;
-    b *= new_brightness;
-    g *= new_brightness;
-
-    __uint32_t ret = (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
-
-    return ret;
 }
 
 int main()
@@ -110,88 +81,13 @@ int main()
         led_string.channel[0].leds[i] = 0;
     }
 
-    int sustain = 0;
-    int key_pressed[LED_COUNT];
-    int key_sustain[LED_COUNT];
-
-    for(int i = 0; i < LED_COUNT; i++)
-    {
-        key_pressed[i] = 0;
-        key_sustain[i] = 0;
-    }
-
-    unsigned char buffer[2];
+    led_update_react_to_piano_data *data = new_led_update_react_to_piano_data();
+    led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
+    data_union->react_to_piano = data;
 
     while(1)
     {
-        if(pipe_size((pipe_generic_t *) consumer) > 0)
-        {
-            ws2811_led_t color = (uint32_t) (random() % 0xFFFFFF);
-
-            while(pipe_size((pipe_generic_t *) consumer) > 0)
-            {
-                pipe_pop(consumer, buffer, 1);
-
-                if(buffer[0] == 144)
-                {
-                    pipe_pop(consumer, buffer, 2);
-
-                    if(buffer[1] > 0)
-                    {
-                        led_string.channel[0].leds[buffer[0] - 21] = color;
-                        key_pressed[buffer[0] - 21] = 1;
-                        key_sustain[buffer[0] - 21] = 1;
-                    }
-                    else
-                    {
-                        key_pressed[buffer[0] - 21] = 0;
-
-                        if(!sustain)
-                        {
-                            key_sustain[buffer[0] - 21] = 0;
-                        }
-                    }
-                }
-
-                if(buffer[0] == 176)
-                {
-                    pipe_pop(consumer, buffer, 2);
-
-                    if(buffer[1] > 0)
-                    {
-                        sustain = 1;
-                    }
-                    else
-                    {
-                        sustain = 0;
-                    }
-                }
-            }
-        }
-
-        if(!sustain)
-        {
-            for(int i = 0; i < LED_COUNT; i++)
-            {
-                if(key_pressed[i] == 0 && key_sustain[i] == 1)
-                {
-                    printf("setting key_sustain[%i] to 0\n", i);
-                    key_sustain[i] = 0;
-                }
-            }
-        }
-
-        for(int i = 0; i < LED_COUNT; i++)
-        {
-            if(!(key_sustain[i]))
-            {
-                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 128);
-            }
-            else
-            {
-                led_string.channel[0].leds[i] = adjacent_color(led_string.channel[0].leds[i], 245);
-            }
-        }
+        led_update_function(&led_string, consumer, data_union);
 
         if(ws2811_render(&led_string) != WS2811_SUCCESS)
         {
