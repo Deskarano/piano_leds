@@ -163,25 +163,13 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
 void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
 {
-    int occupied_copy[LED_COUNT];
-    __uint32_t color_copy[LED_COUNT];
-    int direction_copy[LED_COUNT];
-    int size_copy[LED_COUNT];
-
     for(int i = 0; i < LED_COUNT; i++)
     {
-        color_copy[i] = data->piano_war->colors[i];
-        direction_copy[i] = data->piano_war->direction[i];
-        size_copy[i] = data->piano_war->size[i];
-    }
-
-    for(int i = 0; i < LED_COUNT; i++)
-    {
-        if(occupied_copy[i])
+        if(data->piano_war->occupied[i])
         {
             if(i == 0 || i == LED_COUNT - 1)
             {
-                if(i == 0 && direction_copy[i] == -1)
+                if(i == 0 && data->piano_war->direction[i] == -1)
                 {
                     data->piano_war->size[i]--;
 
@@ -198,7 +186,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                     }
                 }
 
-                if(i == LED_COUNT - 1 && direction_copy[i] == 1)
+                if(i == LED_COUNT - 1 && data->piano_war->direction[i] == 1)
                 {
                     data->piano_war->size[i]--;
 
@@ -217,7 +205,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
             }
             else
             {
-                if(occupied_copy[i + direction_copy[i]])
+                if(data->piano_war->occupied[i + data->piano_war->direction[i]])
                 {
                     data->piano_war->size[i]--;
 
@@ -225,7 +213,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                     {
                         data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
 
-                        if(direction_copy[i] == -1)
+                        if(data->piano_war->direction[i] == -1)
                         {
                             data->piano_war->direction[i] = 1;
                         }
@@ -243,10 +231,10 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                 }
                 else
                 {
-                    data->piano_war->occupied[i + direction_copy[i]] = 1;
-                    data->piano_war->colors[i + direction_copy[i]] = color_copy[i];
-                    data->piano_war->direction[i + direction_copy[i]] = direction_copy[i];
-                    data->piano_war->size[i + direction_copy[i]] = size_copy[i];
+                    data->piano_war->occupied[i + data->piano_war->direction[i]] = 1;
+                    data->piano_war->colors[i + data->piano_war->direction[i]] = data->piano_war->colors[i];
+                    data->piano_war->direction[i + data->piano_war->direction[i]] = data->piano_war->direction[i];
+                    data->piano_war->size[i + data->piano_war->direction[i]] = data->piano_war->size[i];
 
                     data->piano_war->occupied[i] = 0;
                     data->piano_war->colors[i] = 0;
