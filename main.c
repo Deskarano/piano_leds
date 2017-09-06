@@ -85,6 +85,8 @@ int main()
     led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
     data_union->react_to_piano = data;
 
+    led_update_function = led_update_react_to_piano;
+
     while(1)
     {
         led_update_function(&led_string, consumer, data_union);
