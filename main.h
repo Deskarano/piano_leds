@@ -15,7 +15,7 @@
 #define GPIO_PIN                21
 #define DMA                     5
 #define STRIP_TYPE              WS2811_STRIP_GBR        // WS2812/SK6812RGB integrated chip+leds
-#define LED_COUNT               150
+#define LED_COUNT               88
 #define UPDATES_PER_SEC         16
 
 __uint32_t adjacent_color(__uint32_t color, double factor)
@@ -36,18 +36,22 @@ typedef struct
     int key_sustain[LED_COUNT];
 
     int sustain;
-} led_update_react_to_piano_data;
+} led_update_piano_normal_data;
 
-typedef union
+typedef struct
 {
-    led_update_react_to_piano_data *react_to_piano;
-} led_update_function_data;
+    unsigned char buffer[2];
 
-int (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
+    int occupied[LED_COUNT];
+    __uint32_t colors[LED_COUNT];
+    int direction[LED_COUNT];
+    int size[LED_COUNT];
+} led_update_piano_war_data;
 
-led_update_react_to_piano_data *new_led_update_react_to_piano_data()
+
+led_update_piano_normal_data *new_led_update_piano_normal_data()
 {
-    led_update_react_to_piano_data *ret = malloc(sizeof(led_update_react_to_piano_data));
+    led_update_piano_normal_data *ret = malloc(sizeof(led_update_piano_normal_data));
 
     ret->buffer[0] = 0;
     ret->buffer[1] = 1;
@@ -63,68 +67,90 @@ led_update_react_to_piano_data *new_led_update_react_to_piano_data()
     return ret;
 }
 
-int led_update_react_to_piano(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
+led_update_piano_war_data *new_led_update_piano_war_data()
 {
-    if(pipe_size((pipe_generic_t *) consumer) > 0)
+    led_update_piano_war_data *ret = malloc(sizeof(led_update_piano_war_data));
+    ret->buffer[0] = 0;
+    ret->buffer[1] = 1;
+
+    for(int i = 0; i < LED_COUNT; i++)
     {
-        ws2811_led_t color = (uint32_t) (random() % 0xFFFFFF);
+        ret->occupied[i] = 0;
+        ret->colors[i] = 0;
+        ret->direction[i] = 0;
+        ret->size[i] = 0;
+    }
 
-        while(pipe_size((pipe_generic_t *) consumer) > 0)
+    return ret;
+}
+
+typedef union
+{
+    led_update_piano_normal_data *piano_normal;
+    led_update_piano_war_data *piano_war;
+} led_update_function_data;
+
+void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
+
+void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
+{
+    ws2811_led_t color = (uint32_t) (random() % 0xFFFFFF);
+
+    while(pipe_size((pipe_generic_t *) consumer) > 0)
+    {
+        pipe_pop(consumer, data->piano_normal->buffer, 1);
+
+        if(data->piano_normal->buffer[0] == 144)
         {
-            pipe_pop(consumer, data->react_to_piano->buffer, 1);
+            pipe_pop(consumer, data->piano_normal->buffer, 2);
 
-            if(data->react_to_piano->buffer[0] == 144)
+            if(data->piano_normal->buffer[1] > 0)
             {
-                pipe_pop(consumer, data->react_to_piano->buffer, 2);
+                led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] = color;
+                data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 1;
+                data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 1;
+            }
+            else
+            {
+                data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 0;
 
-                if(data->react_to_piano->buffer[1] > 0)
+                if(!data->piano_normal->sustain)
                 {
-                    led_string->channel[0].leds[data->react_to_piano->buffer[0] - 21] = color;
-                    data->react_to_piano->key_pressed[data->react_to_piano->buffer[0] - 21] = 1;
-                    data->react_to_piano->key_sustain[data->react_to_piano->buffer[0] - 21] = 1;
-                }
-                else
-                {
-                    data->react_to_piano->key_pressed[data->react_to_piano->buffer[0] - 21] = 0;
-
-                    if(!data->react_to_piano->sustain)
-                    {
-                        data->react_to_piano->key_sustain[data->react_to_piano->buffer[0] - 21] = 0;
-                    }
+                    data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 0;
                 }
             }
+        }
 
-            if(data->react_to_piano->buffer[0] == 176)
+        if(data->piano_normal->buffer[0] == 176)
+        {
+            pipe_pop(consumer, data->piano_normal->buffer, 2);
+
+            if(data->piano_normal->buffer[1] > 0)
             {
-                pipe_pop(consumer, data->react_to_piano->buffer, 2);
-
-                if(data->react_to_piano->buffer[1] > 0)
-                {
-                    data->react_to_piano->sustain = 1;
-                }
-                else
-                {
-                    data->react_to_piano->sustain = 0;
-                }
+                data->piano_normal->sustain = 1;
+            }
+            else
+            {
+                data->piano_normal->sustain = 0;
             }
         }
     }
 
-    if(!data->react_to_piano->sustain)
+    if(!data->piano_normal->sustain)
     {
         for(int i = 0; i < LED_COUNT; i++)
         {
-            if(data->react_to_piano->key_pressed[i] == 0 && data->react_to_piano->key_sustain[i] == 1)
+            if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
             {
                 printf("setting key_sustain[%i] to 0\n", i);
-                data->react_to_piano->key_sustain[i] = 0;
+                data->piano_normal->key_sustain[i] = 0;
             }
         }
     }
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        if(!(data->react_to_piano->key_sustain[i]))
+        if(!(data->piano_normal->key_sustain[i]))
         {
             led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
         }
@@ -135,5 +161,146 @@ int led_update_react_to_piano(ws2811_t *led_string, pipe_consumer_t *consumer, l
     }
 }
 
+void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
+{
+    int occupied_copy[LED_COUNT];
+    __uint32_t color_copy[LED_COUNT];
+    int direction_copy[LED_COUNT];
+    int size_copy[LED_COUNT];
+
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        color_copy[i] = data->piano_war->colors[i];
+        direction_copy[i] = data->piano_war->direction[i];
+        size_copy[i] = data->piano_war->size[i];
+    }
+
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        if(occupied_copy[i])
+        {
+            if(i == 0 || i == LED_COUNT - 1)
+            {
+                if(i == 0 && direction_copy[i] == -1)
+                {
+                    data->piano_war->size[i]--;
+
+                    if(data->piano_war->size[i])
+                    {
+                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+                        data->piano_war->direction[i] = 1;
+                    }
+                    else
+                    {
+                        data->piano_war->occupied[i] = 0;
+                        data->piano_war->colors[i] = 0;
+                        data->piano_war->direction[i] = 0;
+                    }
+                }
+
+                if(i == LED_COUNT - 1 && direction_copy[i] == 1)
+                {
+                    data->piano_war->size[i]--;
+
+                    if(data->piano_war->size[i])
+                    {
+                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+                        data->piano_war->direction[i] = -1;
+                    }
+                    else
+                    {
+                        data->piano_war->occupied[i] = 0;
+                        data->piano_war->colors[i] = 0;
+                        data->piano_war->direction[i] = 0;
+                    }
+                }
+            }
+            else
+            {
+                if(occupied_copy[i + direction_copy[i]])
+                {
+                    data->piano_war->size[i]--;
+
+                    if(data->piano_war->size[i])
+                    {
+                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+
+                        if(direction_copy[i] == -1)
+                        {
+                            data->piano_war->direction[i] = 1;
+                        }
+                        else
+                        {
+                            data->piano_war->direction[i] = -1;
+                        }
+                    }
+                    else
+                    {
+                        data->piano_war->occupied[i] = 0;
+                        data->piano_war->colors[i] = 0;
+                        data->piano_war->direction[i] = 0;
+                    }
+                }
+                else
+                {
+                    data->piano_war->occupied[i + direction_copy[i]] = 1;
+                    data->piano_war->colors[i + direction_copy[i]] = color_copy[i];
+                    data->piano_war->direction[i + direction_copy[i]] = direction_copy[i];
+                    data->piano_war->size[i + direction_copy[i]] = size_copy[i];
+
+                    data->piano_war->occupied[i] = 0;
+                    data->piano_war->colors[i] = 0;
+                    data->piano_war->direction[i] = 0;
+                    data->piano_war->size[i] = 0;
+                }
+            }
+        }
+    }
+
+    int left_count = 0;
+    int right_count = 0;
+
+    while(pipe_size((pipe_generic_t *) consumer) > 0)
+    {
+        pipe_pop(consumer, data->piano_war->buffer, 1);
+
+        if(data->piano_war->buffer[0] == 144)
+        {
+            pipe_pop(consumer, data->piano_war->buffer, 2);
+
+            if(data->piano_war->buffer[1] > 0)
+            {
+                //determine which direction to send it from
+                if(data->piano_war->buffer[0] - 21 < 44)
+                {
+                    left_count++;
+                }
+                else
+                {
+                    right_count;
+                }
+            }
+        }
+    }
+
+    if(left_count > 0)
+    {
+        data->piano_war->colors[0] = (uint32_t) (random() % 0xFFFFFF);
+        data->piano_war->direction[0] = 1;
+        data->piano_war->size[0] = left_count;
+    }
+
+    if(right_count > 0)
+    {
+        data->piano_war->colors[LED_COUNT - 1] = (uint32_t) (random() % 0xFFFFFF);
+        data->piano_war->direction[LED_COUNT - 1] = -1;
+        data->piano_war->size[LED_COUNT - 1] = right_count;
+    }
+
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        led_string->channel[0].leds[i] = data->piano_war->colors[i];
+    }
+}
 
 #endif //PIANO_LEDS_MAIN_H
