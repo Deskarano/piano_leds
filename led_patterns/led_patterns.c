@@ -1,22 +1,10 @@
-#ifndef PIANO_LEDS_MAIN_H
-#define PIANO_LEDS_MAIN_H
+//
+// Created by grg on 9/6/17.
+//
 
+#include "led_patterns.h"
+#include <stdlib.h>
 #include <stdio.h>
-#include <stdint.h>
-#include <pthread.h>
-#include <math.h>
-
-#include <alsa/asoundlib.h>
-
-#include "rpi_ws281x/ws2811.h"
-#include "pipe/pipe.h"
-
-#define TARGET_FREQ             WS2811_TARGET_FREQ
-#define GPIO_PIN                21
-#define DMA                     5
-#define STRIP_TYPE              WS2811_STRIP_GBR        // WS2812/SK6812RGB integrated chip+leds
-#define LED_COUNT               88
-#define UPDATES_PER_SEC         16
 
 __uint32_t adjacent_color(__uint32_t color, double factor)
 {
@@ -28,27 +16,6 @@ __uint32_t adjacent_color(__uint32_t color, double factor)
 
     return ret;
 }
-
-typedef struct
-{
-    unsigned char buffer[2];
-    int key_pressed[LED_COUNT];
-    int key_sustain[LED_COUNT];
-
-    int sustain;
-} led_update_piano_normal_data;
-
-typedef struct
-{
-    unsigned char buffer[2];
-
-    int occupied[LED_COUNT];
-    __uint32_t colors[LED_COUNT];
-    int direction[LED_COUNT];
-    int size[LED_COUNT];
-    int locked[LED_COUNT];
-} led_update_piano_war_data;
-
 
 led_update_piano_normal_data *new_led_update_piano_normal_data()
 {
@@ -85,14 +52,6 @@ led_update_piano_war_data *new_led_update_piano_war_data()
 
     return ret;
 }
-
-typedef union
-{
-    led_update_piano_normal_data *piano_normal;
-    led_update_piano_war_data *piano_war;
-} led_update_function_data;
-
-void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
 
 void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
 {
@@ -170,54 +129,42 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
     {
         if(data->piano_war->locked[i]) data->piano_war->locked[i] = 0;
     }
-    
+
     for(int i = 0; i < LED_COUNT; i++)
     {
         if(data->piano_war->occupied[i] && !data->piano_war->locked[i])
         {
-            printf("pos %i is OCCUPIED\n", i);
             if((i == 0 && data->piano_war->direction[i] == -1) ||
                (i == LED_COUNT - 1 && data->piano_war->direction[i] == 1))
             {
-                if(i == 0 && data->piano_war->direction[i] == -1)
-                {
-                    data->piano_war->size[i]--;
 
-                    if(data->piano_war->size[i])
+                data->piano_war->size[i]--;
+
+                if(data->piano_war->size[i])
+                {
+                    data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+
+                    if(data->piano_war->direction[i] == -1)
                     {
-                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
                         data->piano_war->direction[i] = 1;
                     }
-                    else
+                    else if(data->piano_war->direction[i] == 1)
                     {
-                        data->piano_war->occupied[i] = 0;
-                        data->piano_war->colors[i] = 0;
-                        data->piano_war->direction[i] = 0;
-                    }
-                }
-
-                if(i == LED_COUNT - 1 && data->piano_war->direction[i] == 1)
-                {
-                    data->piano_war->size[i]--;
-
-                    if(data->piano_war->size[i])
-                    {
-                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
                         data->piano_war->direction[i] = -1;
                     }
-                    else
-                    {
-                        data->piano_war->occupied[i] = 0;
-                        data->piano_war->colors[i] = 0;
-                        data->piano_war->direction[i] = 0;
-                    }
                 }
+                else
+                {
+                    data->piano_war->occupied[i] = 0;
+                    data->piano_war->colors[i] = 0;
+                    data->piano_war->direction[i] = 0;
+                }
+
             }
             else
             {
                 if(data->piano_war->occupied[i + data->piano_war->direction[i]])
                 {
-                    printf("in pixel collision block for pos %i\n", i);
                     data->piano_war->size[i]--;
 
                     if(data->piano_war->size[i])
@@ -242,7 +189,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                 }
                 else
                 {
-                    printf("in move block for pos%i\n", i);
                     data->piano_war->occupied[i + data->piano_war->direction[i]] = 1;
                     data->piano_war->colors[i + data->piano_war->direction[i]] = data->piano_war->colors[i];
                     data->piano_war->direction[i + data->piano_war->direction[i]] = data->piano_war->direction[i];
@@ -271,7 +217,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
             if(data->piano_war->buffer[1] > 0)
             {
-                //determine which direction to send it from
                 if(data->piano_war->buffer[0] - 21 < 44)
                 {
                     left_count++;
@@ -283,8 +228,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
             }
         }
     }
-
-    printf("left_count: %i\nright_count: %i\n", left_count, right_count);
 
     if(left_count > 0)
     {
@@ -307,5 +250,3 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
         led_string->channel[0].leds[i] = data->piano_war->colors[i];
     }
 }
-
-#endif //PIANO_LEDS_MAIN_H

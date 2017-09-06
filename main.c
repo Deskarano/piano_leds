@@ -1,6 +1,7 @@
-#include "main.h"
+#include "led_patterns/led_patterns.h"
 
-
+#include <alsa/asoundlib.h>
+#include <pthread.h>
 
 typedef struct
 {
@@ -31,6 +32,8 @@ void *midi_collector_thread(void *arg)
         }
     }
 }
+
+void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
 
 int main()
 {

@@ -5,7 +5,9 @@ set(CMAKE_C_FLAGS "-lasound -lpthread -lm")
 
 set(SOURCE_FILES_MAIN
         main.c
-        main.h
+        globals.h
+
+        led_patterns/led_patterns.c
 
         rpi_ws281x/dma.c
         rpi_ws281x/mailbox.c
