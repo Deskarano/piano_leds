@@ -11,6 +11,7 @@ typedef struct led_update_piano_normal_data
     int key_pressed[LED_COUNT];
     int key_sustain[LED_COUNT];
 
+    unsigned int last_color;
     int sustain;
 } led_update_piano_normal_data;
 

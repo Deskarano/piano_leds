@@ -1,16 +1,7 @@
 #include "led_patterns.h"
+#include "color_utils.h"
+
 #include <stdlib.h>
-
-__uint32_t adjacent_color(__uint32_t color, double factor)
-{
-    double r = (double) (color & 0xFF) * factor;
-    double b = (double) ((color >> 8) & 0xFF) * factor;
-    double g = (double) ((color >> 16) & 0xFF) * factor;
-
-    __uint32_t ret = (((__uint32_t) g) << 16) + (((__uint32_t) b) << 8) + (__uint32_t) r;
-
-    return ret;
-}
 
 led_update_piano_normal_data *new_led_update_piano_normal_data()
 {
@@ -25,6 +16,7 @@ led_update_piano_normal_data *new_led_update_piano_normal_data()
         ret->key_sustain[i] = 0;
     }
 
+    ret->last_color = 0;
     ret->sustain = 0;
 
     return ret;
@@ -50,7 +42,16 @@ led_update_piano_war_data *new_led_update_piano_war_data()
 
 void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
 {
-    ws2811_led_t color = (uint32_t) (random() % 0xFFFFFF);
+    ws2811_led_t color;
+
+    if(data->piano_normal->last_color == 0)
+    {
+        color = (unsigned int) (random() & 0xFFFFFF);
+    }
+    else
+    {
+        color = random_near_color(data->piano_normal->last_color, 5, 5, 5);
+    }
 
     while(pipe_size((pipe_generic_t *) consumer) > 0)
     {
@@ -114,6 +115,8 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
             led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
         }
     }
+
+    data->piano_normal->last_color = color;
 }
 
 void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)

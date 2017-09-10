@@ -8,6 +8,7 @@ set(SOURCE_FILES_MAIN
         globals.h
 
         led_patterns/led_patterns.c
+        led_patterns/color_utils.c
 
         rpi_ws281x/dma.c
         rpi_ws281x/mailbox.c

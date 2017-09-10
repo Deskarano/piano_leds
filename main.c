@@ -84,11 +84,11 @@ int main()
 
     //init main loop
     void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
-    led_update_function = led_update_piano_war;
+    led_update_function = led_update_piano_normal;
 
-    led_update_piano_war_data *data = new_led_update_piano_war_data();
+    led_update_piano_normal_data *data = new_led_update_piano_normal_data();
     led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
-    data_union->piano_war = data;
+    data_union->piano_normal = data;
 
     while(1)
     {
