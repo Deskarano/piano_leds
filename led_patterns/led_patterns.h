@@ -1,16 +1,11 @@
-//
-// Created by grg on 9/6/17.
-//
-
 #ifndef PIANO_LEDS_LED_PATTERNS_H
 #define PIANO_LEDS_LED_PATTERNS_H
 
 #include "../rpi_ws281x/ws2811.h"
 #include "../pipe/pipe.h"
 #include "../globals.h"
-#include <stdint.h>
 
-typedef struct
+typedef struct led_update_piano_normal_data
 {
     unsigned char buffer[2];
     int key_pressed[LED_COUNT];
@@ -19,12 +14,12 @@ typedef struct
     int sustain;
 } led_update_piano_normal_data;
 
-typedef struct
+typedef struct led_update_piano_war_data
 {
     unsigned char buffer[2];
 
     int occupied[LED_COUNT];
-    __uint32_t colors[LED_COUNT];
+    int colors[LED_COUNT];
     int direction[LED_COUNT];
     int size[LED_COUNT];
     int locked[LED_COUNT];
@@ -33,13 +28,13 @@ typedef struct
 led_update_piano_normal_data *new_led_update_piano_normal_data();
 led_update_piano_war_data *new_led_update_piano_war_data();
 
-typedef union
+typedef union led_update_function_data
 {
     led_update_piano_normal_data *piano_normal;
     led_update_piano_war_data *piano_war;
 } led_update_function_data;
 
 void led_update_piano_normal(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
-void led_update_piano_war(ws2811_t *, pipe_consumer_t *, led_update_function_data *)
+void led_update_piano_war(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
 
 #endif //PIANO_LEDS_LED_PATTERNS_H

@@ -1,10 +1,5 @@
-//
-// Created by grg on 9/6/17.
-//
-
 #include "led_patterns.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 __uint32_t adjacent_color(__uint32_t color, double factor)
 {
@@ -103,7 +98,6 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         {
             if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
             {
-                printf("setting key_sustain[%i] to 0\n", i);
                 data->piano_normal->key_sustain[i] = 0;
             }
         }
@@ -137,7 +131,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
             if((i == 0 && data->piano_war->direction[i] == -1) ||
                (i == LED_COUNT - 1 && data->piano_war->direction[i] == 1))
             {
-
                 data->piano_war->size[i]--;
 
                 if(data->piano_war->size[i])
@@ -159,7 +152,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
                     data->piano_war->colors[i] = 0;
                     data->piano_war->direction[i] = 0;
                 }
-
             }
             else
             {
@@ -247,6 +239,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        led_string->channel[0].leds[i] = data->piano_war->colors[i];
+        led_string->channel[0].leds[i] = (unsigned) data->piano_war->colors[i];
     }
 }

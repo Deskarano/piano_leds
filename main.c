@@ -1,9 +1,10 @@
-#include "led_patterns/led_patterns.h"
-
 #include <alsa/asoundlib.h>
 #include <pthread.h>
 
-typedef struct
+#include "led_patterns/led_patterns.h"
+
+
+typedef struct midi_collector_thread_arg
 {
     pipe_producer_t *producer;
     snd_rawmidi_t *midi_in;
@@ -27,13 +28,10 @@ void *midi_collector_thread(void *arg)
 
         if(buffer[0] != 254)
         {
-            printf("pushing %i\n", buffer[0]);
             pipe_push(producer, buffer, 1);
         }
     }
 }
-
-void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
 
 int main()
 {
@@ -61,19 +59,19 @@ int main()
     pthread_t *midi_thread_handle = malloc(sizeof(pthread_t));
     pthread_create(midi_thread_handle, NULL, midi_collector_thread, arg);
 
-    //Initiate LEDs
-    ws2811_t led_string;
+    //init LEDs
+    ws2811_t *led_string = malloc(sizeof(ws2811_t));
 
-    led_string.freq = TARGET_FREQ;
-    led_string.dmanum = DMA;
+    led_string->freq = TARGET_FREQ;
+    led_string->dmanum = DMA;
 
-    led_string.channel[0].gpionum = GPIO_PIN;
-    led_string.channel[0].count = LED_COUNT;
-    led_string.channel[0].invert = 0;
-    led_string.channel[0].brightness = 255;
-    led_string.channel[0].strip_type = STRIP_TYPE;
+    led_string->channel[0].gpionum = GPIO_PIN;
+    led_string->channel[0].count = LED_COUNT;
+    led_string->channel[0].invert = 0;
+    led_string->channel[0].brightness = 255;
+    led_string->channel[0].strip_type = STRIP_TYPE;
 
-    if(ws2811_init(&led_string) != WS2811_SUCCESS)
+    if(ws2811_init(led_string) != WS2811_SUCCESS)
     {
         fprintf(stderr, "ws2811_init failed");
         exit(1);
@@ -81,20 +79,22 @@ int main()
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        led_string.channel[0].leds[i] = 0;
+        led_string->channel[0].leds[i] = 0;
     }
+
+    //init main loop
+    void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
+    led_update_function = led_update_piano_war;
 
     led_update_piano_war_data *data = new_led_update_piano_war_data();
     led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
     data_union->piano_war = data;
 
-    led_update_function = led_update_piano_war;
-
     while(1)
     {
-        led_update_function(&led_string, consumer, data_union);
+        led_update_function(led_string, consumer, data_union);
 
-        if(ws2811_render(&led_string) != WS2811_SUCCESS)
+        if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
             fprintf(stderr, "ws2811_init failed");
             pipe_consumer_free(consumer);
