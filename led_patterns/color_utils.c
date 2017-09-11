@@ -2,6 +2,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 unsigned int adjacent_color(unsigned int color, double factor)
 {
@@ -18,35 +19,36 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
     char r = (char) (color & 0xFF);
     char b = (char) ((color >> 8) & 0xFF);
     char g = (char) ((color >> 16) & 0xFF);
-    
+
     srandom((unsigned int) time(NULL));
-    
+
     char dr = (char) (random() % (2 * dr_max));
-    if(dr > dr_max)
+
+    if(dr > dr_max && r < (0xFF - (dr - dr_max)))
     {
         r += (dr - dr_max);
     }
-    else
+    else if(dr < dr_max && r > dr)
     {
         r -= dr;
     }
 
     char db = (char) (random() % (2 * db_max));
-    if(db > db_max)
+    if(db > db_max && b < (0xFF - (db - db_max)))
     {
         b += (db - db_max);
     }
-    else
+    else if(db < db_max && b > db)
     {
         b -= db;
     }
 
     char dg = (char) (random() % (2 * dg_max));
-    if(dg > dg_max)
+    if(dg > dg_max && g < (0xFF - (dg - dg_max)))
     {
         g += (dg - dg_max);
     }
-    else
+    else if(dg < dg_max && g > dg)
     {
         g -= dg;
     }

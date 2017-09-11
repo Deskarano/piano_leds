@@ -46,16 +46,14 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
     if(pipe_size((pipe_generic_t *) consumer) > 0)
     {
-    if(data->piano_normal->last_color == 0)
-    {
-        color = (unsigned int) (random() & 0xFFFFFF);
-	printf("Generated new random color %i\n", color);
-    }
-    else
-    {
-        color = random_near_color(data->piano_normal->last_color, 1, 1, 1);
-	printf("Moved from color %#08x to color %#08x\n", data->piano_normal->last_color, color);
-    }
+        if(data->piano_normal->last_color == 0)
+        {
+            color = (unsigned int) (random() & 0xFFFFFF);
+        }
+        else
+        {
+            color = random_near_color(data->piano_normal->last_color, 8, 8, 8);
+        }
     }
     while(pipe_size((pipe_generic_t *) consumer) > 0)
     {
@@ -96,7 +94,7 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
             }
         }
 
-	data->piano_normal->last_color = color;
+        data->piano_normal->last_color = color;
     }
 
     if(!data->piano_normal->sustain)
