@@ -98,28 +98,28 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
             data->piano_normal->last_color = color;
         }
+    }
 
-        if(!data->piano_normal->sustain)
-        {
-            for(int i = 0; i < LED_COUNT; i++)
-            {
-                if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
-                {
-                    data->piano_normal->key_sustain[i] = 0;
-                }
-            }
-        }
-
+    if(!data->piano_normal->sustain)
+    {
         for(int i = 0; i < LED_COUNT; i++)
         {
-            if(!(data->piano_normal->key_sustain[i]))
+            if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
             {
-                led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
+                data->piano_normal->key_sustain[i] = 0;
             }
-            else
-            {
-                led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
-            }
+        }
+    }
+
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        if(!(data->piano_normal->key_sustain[i]))
+        {
+            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
+        }
+        else
+        {
+            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
         }
     }
 }
