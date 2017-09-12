@@ -28,7 +28,7 @@ set(SOURCE_FILES_AMBIENT
         main_ambient.c
         src/globals.h
 
-        src/led_patterns/color_utils.h
+        src/led_patterns/color_utils.c
 
         src/rpi_ws281x/dma.c
         src/rpi_ws281x/mailbox.c

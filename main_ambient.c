@@ -53,8 +53,8 @@ int main()
         {
             colors[i] = 0;
             colors[i] += (unsigned int) (slope_red * i + int_red);
-            colors[i] += (unsigned int) (slope_blue * i + int_blue) << 8;
-            colors[i] += (unsigned int) (slope_green * i + int_green) << 16;
+            colors[i] += ((unsigned int) (slope_blue * i + int_blue)) << 8;
+            colors[i] += ((unsigned int) (slope_green * i + int_green)) << 16;
         }
 
         for(int i = 0; i < LED_COUNT; i++)
