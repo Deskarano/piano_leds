@@ -28,4 +28,6 @@ int main()
     {
         led_string->channel[0].leds[i] = 0;
     }
+
+    printf("currently on branch ambient_leds\n");
 }
