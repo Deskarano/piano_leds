@@ -1,8 +1,8 @@
 #include <alsa/asoundlib.h>
 #include <pthread.h>
 
-#include "led_patterns/led_patterns.h"
-#include "rpi_ws281x/ws2811.h"
+#include "src/led_patterns/led_patterns.h"
+#include "src/rpi_ws281x/ws2811.h"
 
 typedef struct midi_collector_thread_arg
 {
