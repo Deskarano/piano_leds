@@ -60,7 +60,10 @@ void led_update_piano_normal(pipe_consumer_t *consumer, led_update_function_data
         }
         else
         {
-            color = random_near_color(data->piano_normal->last_color, 8, 8, 8);
+            color = random_near_color(data->piano_normal->last_color,
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD);
         }
 
         while(pipe_size((pipe_generic_t *) consumer) > 0)
@@ -152,7 +155,10 @@ void led_update_piano_war(pipe_consumer_t *consumer, led_update_function_data *d
 
                 if(data->piano_war->size[i])
                 {
-                    data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i], 32, 32, 32);
+                    data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                                                                   RAND_COLOR_THRESHOLD,
+                                                                   RAND_COLOR_THRESHOLD,
+                                                                   RAND_COLOR_THRESHOLD);
 
                     if(data->piano_war->direction[i] == -1)
                     {
@@ -178,7 +184,10 @@ void led_update_piano_war(pipe_consumer_t *consumer, led_update_function_data *d
 
                     if(data->piano_war->size[i])
                     {
-                        data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i], 32, 32, 32);
+                        data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                                                                       RAND_COLOR_THRESHOLD,
+                                                                       RAND_COLOR_THRESHOLD,
+                                                                       RAND_COLOR_THRESHOLD);
 
                         if(data->piano_war->direction[i] == -1)
                         {

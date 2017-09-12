@@ -11,4 +11,6 @@
 #define DECAY_IF_SUSTAIN        .95
 #define DECAY_IF_N_SUSTAIN      .5
 
+#define RAND_COLOR_THRESHOLD    16
+
 #endif //PIANO_LEDS_GLOBALS_H

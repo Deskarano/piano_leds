@@ -97,7 +97,7 @@ int main()
 
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
-            fprintf(stderr, "ws2811_init failed");
+            fprintf(stderr, "ws2811_render failed");
             pipe_consumer_free(consumer);
             exit(1);
         }
