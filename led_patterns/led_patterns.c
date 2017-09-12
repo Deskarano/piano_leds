@@ -54,9 +54,7 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         {
             color = random_near_color(data->piano_normal->last_color, 8, 8, 8);
         }
-
-        color = maximize_color(color);
-
+        
         while(pipe_size((pipe_generic_t *) consumer) > 0)
         {
             pipe_pop(consumer, data->piano_normal->buffer, 1);

@@ -15,22 +15,6 @@ unsigned int adjacent_color(unsigned int color, double factor)
     return ret;
 }
 
-unsigned int maximize_color(unsigned int color)
-{
-    double r = (double) (color & 0xFF);
-    double b = (double) ((color >> 8) & 0xFF);
-    double g = (double) ((color >> 16) & 0xFF);
-
-    double max = fmax(r, fmax(b, g));
-
-    r *= 255 / max;
-    b *= 255 / max;
-    g *= 255 / max;
-
-    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
-    return ret;
-}
-
 unsigned int random_near_color(unsigned int color, char dr_max, char db_max, char dg_max)
 {
     char r = (char) (color & 0xFF);
