@@ -42,11 +42,11 @@ led_update_piano_war_data *new_led_update_piano_war_data()
 
 void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
 {
-    ws2811_led_t color;
-
     if(pipe_size((pipe_generic_t *) consumer) > 0)
     {
-        if(data->piano_normal->last_color == 0)
+        ws2811_led_t color = data->piano_normal->last_color;
+
+        if(color == 0)
         {
             color = (unsigned int) (random() & 0xFFFFFF);
         }
@@ -54,69 +54,72 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         {
             color = random_near_color(data->piano_normal->last_color, 8, 8, 8);
         }
-    }
-    while(pipe_size((pipe_generic_t *) consumer) > 0)
-    {
-        pipe_pop(consumer, data->piano_normal->buffer, 1);
 
-        if(data->piano_normal->buffer[0] == 144)
+        color = maximize_color(color);
+
+        while(pipe_size((pipe_generic_t *) consumer) > 0)
         {
-            pipe_pop(consumer, data->piano_normal->buffer, 2);
+            pipe_pop(consumer, data->piano_normal->buffer, 1);
 
-            if(data->piano_normal->buffer[1] > 0)
+            if(data->piano_normal->buffer[0] == 144)
             {
-                led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] = color;
-                data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 1;
-                data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 1;
-            }
-            else
-            {
-                data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 0;
+                pipe_pop(consumer, data->piano_normal->buffer, 2);
 
-                if(!data->piano_normal->sustain)
+                if(data->piano_normal->buffer[1] > 0)
                 {
-                    data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 0;
+                    led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] = color;
+                    data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 1;
+                    data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 1;
+                }
+                else
+                {
+                    data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 0;
+
+                    if(!data->piano_normal->sustain)
+                    {
+                        data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 0;
+                    }
+                }
+            }
+
+            if(data->piano_normal->buffer[0] == 176)
+            {
+                pipe_pop(consumer, data->piano_normal->buffer, 2);
+
+                if(data->piano_normal->buffer[1] > 0)
+                {
+                    data->piano_normal->sustain = 1;
+                }
+                else
+                {
+                    data->piano_normal->sustain = 0;
+                }
+            }
+
+            data->piano_normal->last_color = color;
+        }
+
+        if(!data->piano_normal->sustain)
+        {
+            for(int i = 0; i < LED_COUNT; i++)
+            {
+                if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
+                {
+                    data->piano_normal->key_sustain[i] = 0;
                 }
             }
         }
 
-        if(data->piano_normal->buffer[0] == 176)
+        for(int i = 0; i < LED_COUNT; i++)
         {
-            pipe_pop(consumer, data->piano_normal->buffer, 2);
-
-            if(data->piano_normal->buffer[1] > 0)
+            if(!(data->piano_normal->key_sustain[i]))
             {
-                data->piano_normal->sustain = 1;
+                led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
             }
             else
             {
-                data->piano_normal->sustain = 0;
+                led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
             }
-        }
-
-        data->piano_normal->last_color = color;
-    }
-
-    if(!data->piano_normal->sustain)
-    {
-        for(int i = 0; i < LED_COUNT; i++)
-        {
-            if(data->piano_normal->key_pressed[i] == 0 && data->piano_normal->key_sustain[i] == 1)
-            {
-                data->piano_normal->key_sustain[i] = 0;
-            }
-        }
-    }
-
-    for(int i = 0; i < LED_COUNT; i++)
-    {
-        if(!(data->piano_normal->key_sustain[i]))
-        {
-            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
-        }
-        else
-        {
-            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
         }
     }
 }
