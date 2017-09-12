@@ -15,6 +15,22 @@ unsigned int adjacent_color(unsigned int color, double factor)
     return ret;
 }
 
+unsigned int normalize_color(unsigned int color, char max_intensity)
+{
+    double r = (double) (color & 0xFF);
+    double b = (double) ((color >> 8) & 0xFF);
+    double g = (double) ((color >> 16) & 0xFF);
+
+    double max = fmax(r, fmax(b, g));
+
+    r *= max_intensity / max;
+    b *= max_intensity / max;
+    g *= max_intensity / max;
+
+    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
+    return ret;
+}
+
 unsigned int random_near_color(unsigned int color, char dr_max, char db_max, char dg_max)
 {
     char r = (char) (color & 0xFF);

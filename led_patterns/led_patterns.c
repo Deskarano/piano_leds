@@ -54,7 +54,7 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         {
             color = random_near_color(data->piano_normal->last_color, 8, 8, 8);
         }
-        
+
         while(pipe_size((pipe_generic_t *) consumer) > 0)
         {
             pipe_pop(consumer, data->piano_normal->buffer, 1);
@@ -65,7 +65,8 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
                 if(data->piano_normal->buffer[1] > 0)
                 {
-                    led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] = color;
+                    led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] =
+                            normalize_color(color, data->piano_normal->buffer[1] * (char) 2);
                     data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 1;
                     data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 1;
                 }
