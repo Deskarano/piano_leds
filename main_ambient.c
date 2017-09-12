@@ -69,6 +69,7 @@ int main()
         }
 
         left_color = random_near_color(left_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
+        right_color = random_near_color(right_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
 
         usleep(1000000 / UPDATES_PER_SEC);
     }
