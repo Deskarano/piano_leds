@@ -20,7 +20,7 @@ typedef struct led_update_piano_war_data
     unsigned char buffer[2];
 
     int occupied[LED_COUNT];
-    int colors[LED_COUNT];
+    unsigned int colors[LED_COUNT];
     int direction[LED_COUNT];
     int size[LED_COUNT];
     int locked[LED_COUNT];

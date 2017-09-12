@@ -23,7 +23,6 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
     srandom((unsigned int) time(NULL));
 
     char dr = (char) (random() % (2 * dr_max));
-
     if(dr > dr_max && r < (0xFF - (dr - dr_max)))
     {
         r += (dr - dr_max);

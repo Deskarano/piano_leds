@@ -140,7 +140,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
                 if(data->piano_war->size[i])
                 {
-                    data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+                    data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i], 32, 32, 32);
 
                     if(data->piano_war->direction[i] == -1)
                     {
@@ -166,7 +166,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
                     if(data->piano_war->size[i])
                     {
-                        data->piano_war->colors[i] = (uint32_t) (random() % 0xFFFFFF);
+                        data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i], 32, 32, 32);
 
                         if(data->piano_war->direction[i] == -1)
                         {
@@ -244,6 +244,6 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        led_string->channel[0].leds[i] = (unsigned) data->piano_war->colors[i];
+        led_string->channel[0].leds[i] = data->piano_war->colors[i];
     }
 }
