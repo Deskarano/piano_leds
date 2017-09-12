@@ -3,6 +3,14 @@
 
 #include <stdlib.h>
 
+void transfer_led_states(unsigned int *source, unsigned int *target)
+{
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        target[i] = source[i];
+    }
+}
+
 led_update_piano_normal_data *new_led_update_piano_normal_data()
 {
     led_update_piano_normal_data *ret = malloc(sizeof(led_update_piano_normal_data));
@@ -40,11 +48,11 @@ led_update_piano_war_data *new_led_update_piano_war_data()
     return ret;
 }
 
-void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
+void led_update_piano_normal(pipe_consumer_t *consumer, led_update_function_data *data)
 {
     if(pipe_size((pipe_generic_t *) consumer) > 0)
     {
-        ws2811_led_t color = data->piano_normal->last_color;
+        unsigned int color = data->piano_normal->last_color;
 
         if(color == 0)
         {
@@ -65,7 +73,7 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
 
                 if(data->piano_normal->buffer[1] > 0)
                 {
-                    led_string->channel[0].leds[data->piano_normal->buffer[0] - 21] =
+                    data->piano_normal->led_states[data->piano_normal->buffer[0] - 21] =
                             normalize_color(color, data->piano_normal->buffer[1] * (char) 2);
                     data->piano_normal->key_pressed[data->piano_normal->buffer[0] - 21] = 1;
                     data->piano_normal->key_sustain[data->piano_normal->buffer[0] - 21] = 1;
@@ -99,6 +107,7 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         }
     }
 
+    //if not sustaining, remove any keys from sustain[] that are not key_pressed[]
     if(!data->piano_normal->sustain)
     {
         for(int i = 0; i < LED_COUNT; i++)
@@ -110,20 +119,21 @@ void led_update_piano_normal(ws2811_t *led_string, pipe_consumer_t *consumer, le
         }
     }
 
+    //sustain logic
     for(int i = 0; i < LED_COUNT; i++)
     {
         if(!(data->piano_normal->key_sustain[i]))
         {
-            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .5);
+            data->piano_normal->led_states[i] = adjacent_color(data->piano_normal->led_states[i], DECAY_IF_N_SUSTAIN);
         }
         else
         {
-            led_string->channel[0].leds[i] = adjacent_color(led_string->channel[0].leds[i], .95);
+            data->piano_normal->led_states[i] = adjacent_color(data->piano_normal->led_states[i], DECAY_IF_SUSTAIN);
         }
     }
 }
 
-void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_update_function_data *data)
+void led_update_piano_war(pipe_consumer_t *consumer, led_update_function_data *data)
 {
     //unlock all values
     for(int i = 0; i < LED_COUNT; i++)
@@ -231,7 +241,7 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
     if(left_count > 0)
     {
         data->piano_war->occupied[0] = 1;
-        data->piano_war->colors[0] = (uint32_t) (random() % 0xFFFFFF);
+        data->piano_war->colors[0] = (unsigned int) (random() % 0xFFFFFF);
         data->piano_war->direction[0] = 1;
         data->piano_war->size[0] = left_count;
     }
@@ -239,13 +249,13 @@ void led_update_piano_war(ws2811_t *led_string, pipe_consumer_t *consumer, led_u
     if(right_count > 0)
     {
         data->piano_war->occupied[LED_COUNT - 1] = 1;
-        data->piano_war->colors[LED_COUNT - 1] = (uint32_t) (random() % 0xFFFFFF);
+        data->piano_war->colors[LED_COUNT - 1] = (unsigned int) (random() % 0xFFFFFF);
         data->piano_war->direction[LED_COUNT - 1] = -1;
         data->piano_war->size[LED_COUNT - 1] = right_count;
     }
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        led_string->channel[0].leds[i] = data->piano_war->colors[i];
+        data->piano_war->led_states[i] = data->piano_war->colors[i];
     }
 }

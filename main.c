@@ -2,6 +2,7 @@
 #include <pthread.h>
 
 #include "led_patterns/led_patterns.h"
+#include "rpi_ws281x/ws2811.h"
 
 typedef struct midi_collector_thread_arg
 {
@@ -82,7 +83,7 @@ int main()
     }
 
     //init main loop
-    void (*led_update_function)(ws2811_t *, pipe_consumer_t *, led_update_function_data *);
+    void (*led_update_function)(pipe_consumer_t *, led_update_function_data *);
     led_update_function = led_update_piano_normal;
 
     led_update_piano_normal_data *data = new_led_update_piano_normal_data();
@@ -91,7 +92,8 @@ int main()
 
     while(1)
     {
-        led_update_function(led_string, consumer, data_union);
+        led_update_function(consumer, data_union);
+        transfer_led_states(data_union->piano_normal->led_states, led_string->channel[0].leds);
 
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
