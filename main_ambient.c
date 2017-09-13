@@ -55,6 +55,8 @@ int main()
             colors[i] += (unsigned int) (slope_red * i + int_red);
             colors[i] += ((unsigned int) (slope_blue * i + int_blue)) << 8;
             colors[i] += ((unsigned int) (slope_green * i + int_green)) << 16;
+
+            printf("set LED %i to color %#08X", i, colors[i]);
         }
 
         for(int i = 0; i < LED_COUNT; i++)
