@@ -10,7 +10,7 @@ typedef struct led_update_function_data
 {
     led_update_function update_function;
     led_update_function prev_update_function;
-    
+
     void *pattern_data;
 
     unsigned int led_states[LED_COUNT];
