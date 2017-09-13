@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <alsa/asoundlib.h>
 #include <pthread.h>
 
@@ -82,18 +83,13 @@ int main()
         led_string->channel[0].leds[i] = 0;
     }
 
-    //init main loop
-    void (*led_update_function)(pipe_consumer_t *, led_update_function_data *);
-    led_update_function = led_update_piano_normal;
-
-    led_update_piano_normal_data *data = new_led_update_piano_normal_data();
-    led_update_function_data *data_union = malloc(sizeof(led_update_function_data));
-    data_union->piano_normal = data;
+    led_update_function_data_t *data = malloc(sizeof(led_update_function_data_t));
+    data->update_function = led_update_piano_normal;
+    data->consumer = consumer;
 
     while(1)
     {
-        led_update_function(consumer, data_union);
-        transfer_led_states(data_union->piano_normal->led_states, led_string->channel[0].leds);
+        run_led_update_function(data);
 
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
