@@ -38,7 +38,6 @@ extern "C" {
 #define PURE                __attribute__((pure))
 #define MALLOC_LIKE         __attribute__((malloc))
 #define NO_NULL_POINTERS    __attribute__((nonnull))
-#define WARN_UNUSED_RESULT  __attribute__((warn_unused_result))
 #else
 /* Feel free to fill in results for more compilers =) */
 #define PURE
@@ -138,10 +137,10 @@ extern "C" {
  *
  * All functions are re-entrant. Synchronization is handled internally.
  */
-typedef struct pipe_t          pipe_t;
+typedef struct pipe_t pipe_t;
 typedef struct pipe_producer_t pipe_producer_t;
 typedef struct pipe_consumer_t pipe_consumer_t;
-typedef struct pipe_generic_t  pipe_generic_t;
+typedef struct pipe_generic_t pipe_generic_t;
 
 #define PIPE_GENERIC(handle) ((pipe_generic_t*)(handle))
 
@@ -154,31 +153,33 @@ typedef struct pipe_generic_t  pipe_generic_t;
  * you want this to be 0. However, limits help prevent an explosion of memory
  * usage in cases where production is significantly faster than consumption.
  */
-pipe_t* MALLOC_LIKE WARN_UNUSED_RESULT pipe_new(size_t elem_size, size_t limit);
+pipe_t *MALLOC_LIKE pipe_new(size_t elem_size, size_t limit);
 
 /*
  * Makes a production handle to the pipe, allowing push operations. This
  * function is extremely cheap; it doesn't allocate memory.
  */
-pipe_producer_t* NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_producer_new(pipe_t*);
+pipe_producer_t *NO_NULL_POINTERS pipe_producer_new(pipe_t *);
 
 /*
  * Makes a consumption handle to the pipe, allowing pop operations. This
  * function is extremely cheap; it doesn't allocate memory.
  */
-pipe_consumer_t* NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_consumer_new(pipe_t*);
+pipe_consumer_t *NO_NULL_POINTERS pipe_consumer_new(pipe_t *);
 
 /*
  * If you call *_new, you must call the corresponding *_free. Failure to do so
  * may result in resource leaks, undefined behavior, and spontaneous combustion.
  */
 
-void pipe_free(pipe_t*);
-void pipe_producer_free(pipe_producer_t*);
-void pipe_consumer_free(pipe_consumer_t*);
+void pipe_free(pipe_t *);
+
+void pipe_producer_free(pipe_producer_t *);
+
+void pipe_consumer_free(pipe_consumer_t *);
 
 /* Copies `count' elements from `elems' into the pipe. */
-void NO_NULL_POINTERS pipe_push(pipe_producer_t*, const void* elems, size_t count);
+void NO_NULL_POINTERS pipe_push(pipe_producer_t *, const void *elems, size_t count);
 
 /*
  * Copies `count' elements from `elems' into the pipe.
@@ -211,9 +212,9 @@ void NO_NULL_POINTERS pipe_push_clobber(pipe_producer_t*,
  * do its best to fill `target' before returning whereas pipe_pop_eagar will
  * return as soon as any elements are available.
  */
-size_t NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_pop(pipe_consumer_t*,
-                                                    void* target,
-                                                    size_t count);
+size_t NO_NULL_POINTERS pipe_pop(pipe_consumer_t *,
+                                 void *target,
+                                 size_t count);
 
 /*
  * Tries to pop `count' elements out of the pipe and into `target', returning
@@ -229,9 +230,9 @@ size_t NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_pop(pipe_consumer_t*,
  * return as soon as any elements are available, whereas pipe_pop will do its
  * best to fill `target' first.
  */
-size_t NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_pop_eager(pipe_consumer_t*,
-                                                          void* target,
-                                                          size_t count);
+size_t NO_NULL_POINTERS pipe_pop_eager(pipe_consumer_t *,
+                                       void *target,
+                                       size_t count);
 
 /*
  * Modifies the pipe to have room for at least `count' elements. If more room
@@ -241,18 +242,18 @@ size_t NO_NULL_POINTERS WARN_UNUSED_RESULT pipe_pop_eager(pipe_consumer_t*,
  * The default minimum is 32 elements. To reset the reservation size to the
  * default, set count to 0.
  */
-void NO_NULL_POINTERS pipe_reserve(pipe_generic_t*, size_t count);
+void NO_NULL_POINTERS pipe_reserve(pipe_generic_t *, size_t count);
 
 /*
  * Determines the size of a pipe's elements. This can be used for generic
  * pipe-processing algorithms to reserve appropriately-sized buffers.
  */
-size_t PURE NO_NULL_POINTERS pipe_elem_size(pipe_generic_t*);
+size_t PURE NO_NULL_POINTERS pipe_elem_size(pipe_generic_t *);
 
 /*
  * Returns the number of elements currently in the pipe
  */
-size_t pipe_size(pipe_generic_t*);
+size_t pipe_size(pipe_generic_t *);
 
 /*
  * Use this to run the pipe self-test. It will call abort() if anything is
@@ -261,7 +262,6 @@ size_t pipe_size(pipe_generic_t*);
  */
 void pipe_run_test_suite(void);
 
-#undef WARN_UNUSED_RESULT
 #undef NO_NULL_POINTERS
 #undef MALLOC_LIKE
 #undef PURE
