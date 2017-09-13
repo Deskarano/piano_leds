@@ -49,7 +49,8 @@ int main()
 
         for(int i = 0; i < LED_COUNT; i++)
         {
-            led_string->channel[0].leds[i] = color;
+	    unsigned int adj_color = random_near_color(color, RAND_COLOR_THRESHOLD * 3, RAND_COLOR_THRESHOLD * 3, RAND_COLOR_THRESHOLD * 3);
+            led_string->channel[0].leds[i] = adj_color;
         }
 
         if(ws2811_render(led_string) != WS2811_SUCCESS)
