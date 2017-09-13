@@ -44,12 +44,18 @@ int main()
         }
         else
         {
-            color = random_near_color(color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
+            color = random_near_color(color, 
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD);
         }
 
         for(int i = 0; i < LED_COUNT; i++)
         {
-	    unsigned int adj_color = random_near_color(color, RAND_COLOR_THRESHOLD * 3, RAND_COLOR_THRESHOLD * 3, RAND_COLOR_THRESHOLD * 3);
+            unsigned int adj_color = random_near_color(color,
+                                                       RAND_COLOR_THRESHOLD * 3,
+                                                       RAND_COLOR_THRESHOLD * 3,
+                                                       RAND_COLOR_THRESHOLD * 3);
             led_string->channel[0].leds[i] = adj_color;
         }
 
