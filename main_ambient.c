@@ -34,34 +34,22 @@ int main()
 
     srandom((unsigned int) time(NULL));
 
-    unsigned int left_color = (unsigned int) random();
-    unsigned int right_color = (unsigned int) random();
-
-    unsigned int colors[LED_COUNT];
+    unsigned int color = 0;
 
     while(1)
     {
-        double slope_red = (right_color & 0xFF) - (left_color & 0xFF);
-        double slope_blue = ((right_color >> 8) & 0xFF) - ((left_color >> 8) & 0xFF);
-        double slope_green = ((right_color >> 16) & 0xFF) - ((left_color >> 16) & 0xFF);
-
-        double int_red = left_color & 0xFF;
-        double int_blue = (left_color >> 8) & 0xFF;
-        double int_green = (left_color >> 16) & 0xFF;
-
-        for(int i = 0; i < LED_COUNT; i++)
+        if(color == 0)
         {
-            colors[i] = 0;
-            colors[i] += (unsigned int) (slope_red * i + int_red);
-            colors[i] += ((unsigned int) (slope_blue * i + int_blue)) << 8;
-            colors[i] += ((unsigned int) (slope_green * i + int_green)) << 16;
-
-            printf("set LED %i to color %#08X", i, colors[i]);
+            color = (unsigned int) random();
+        }
+        else
+        {
+            color = random_near_color(color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
         }
 
         for(int i = 0; i < LED_COUNT; i++)
         {
-            led_string->channel[0].leds[i] = colors[i];
+            led_string->channel[0].leds[i] = color;
         }
 
         if(ws2811_render(led_string) != WS2811_SUCCESS)
@@ -69,9 +57,6 @@ int main()
             fprintf(stderr, "ws2811_render failed");
             exit(1);
         }
-
-        left_color = random_near_color(left_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
-        right_color = random_near_color(right_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
 
         usleep(1000000 / UPDATES_PER_SEC);
     }
