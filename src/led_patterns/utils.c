@@ -40,7 +40,14 @@ void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
             data->current_pattern = AMBIENT_NORMAL;
             data->last_pattern = NONE;
             data->current_update_function = led_update_ambient_normal;
-            data->pattern_data = new_led_update_ambient_normal_data();
+            data->pattern_data = new_led_update_ambient_normal_data_t();
+            break;
+
+        case AMBIENT_GRADIENT:
+            data->current_pattern = AMBIENT_GRADIENT;
+            data->last_pattern = NONE;
+            data->current_update_function = led_update_ambient_gradient;
+            data->pattern_data = new_led_update_ambient_gradient_data_t();
             break;
     }
 }

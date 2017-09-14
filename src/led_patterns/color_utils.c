@@ -5,21 +5,40 @@
 #include <stdio.h>
 #include <math.h>
 
+unsigned char extract_red(unsigned int color)
+{
+    return (unsigned char) (color & 0xFF);
+}
+
+unsigned char extract_blue(unsigned int color)
+{
+    return (unsigned char) ((color >> 8) & 0xFF);
+}
+
+unsigned char extract_green(unsigned int color)
+{
+    return (unsigned char) ((color >> 16) & 0xFF);
+}
+
+unsigned int color_from_channels(unsigned char r, unsigned char b, unsigned char g)
+{
+    return (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
+}
+
 unsigned int adjacent_color(unsigned int color, double factor)
 {
-    double r = (double) (color & 0xFF) * factor;
-    double b = (double) ((color >> 8) & 0xFF) * factor;
-    double g = (double) ((color >> 16) & 0xFF) * factor;
+    double r = extract_red(color) * factor;
+    double b = extract_blue(color) * factor;
+    double g = extract_green(color) * factor;
 
-    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
-    return ret;
+    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
 }
 
 unsigned int normalize_color(unsigned int color, char max_intensity)
 {
-    double r = (double) (color & 0xFF);
-    double b = (double) ((color >> 8) & 0xFF);
-    double g = (double) ((color >> 16) & 0xFF);
+    double r = extract_red(color);
+    double b = extract_blue(color);
+    double g = extract_green(color);
 
     double max = fmax(r, fmax(b, g));
 
@@ -27,15 +46,14 @@ unsigned int normalize_color(unsigned int color, char max_intensity)
     b *= max_intensity / max;
     g *= max_intensity / max;
 
-    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
-    return ret;
+    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
 }
 
 unsigned int random_near_color(unsigned int color, char dr_max, char db_max, char dg_max)
 {
-    char r = (char) (color & 0xFF);
-    char b = (char) ((color >> 8) & 0xFF);
-    char g = (char) ((color >> 16) & 0xFF);
+    unsigned char r = extract_red(color);
+    unsigned char b = extract_blue(color);
+    unsigned char g = extract_green(color);
 
     srandom((unsigned int) time(NULL));
 
@@ -69,6 +87,5 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
         g -= dg;
     }
 
-    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
-    return ret;
+    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
 }

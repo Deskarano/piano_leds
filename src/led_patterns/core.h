@@ -8,7 +8,8 @@ typedef enum PATTERN
     NONE,
     PIANO_NORMAL,
     PIANO_WAR,
-    AMBIENT_NORMAL
+    AMBIENT_NORMAL,
+    AMBIENT_GRADIENT
 } Pattern;
 
 struct led_update_function_data;
