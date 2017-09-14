@@ -1,5 +1,5 @@
-#ifndef PIANO_LEDS_LED_PATTERNS_PIANO_H
-#define PIANO_LEDS_LED_PATTERNS_PIANO_H
+#ifndef SMART_LEDS_LED_PATTERNS_PIANO_H
+#define SMART_LEDS_LED_PATTERNS_PIANO_H
 
 #include "led_patterns_core.h"
 

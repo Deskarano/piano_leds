@@ -1,4 +1,5 @@
-#include "led_patterns_core.h"
+#include "led_patterns_piano.h"
+#include "led_patterns_ambient.h"
 
 #include <stdio.h>
 #include <stdlib.h>
