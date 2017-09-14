@@ -2,6 +2,8 @@
 #include <alsa/asoundlib.h>
 #include <pthread.h>
 
+#include "src/globals.h"
+
 #include "src/led_patterns/led_patterns.h"
 #include "src/rpi_ws281x/ws2811.h"
 
@@ -84,7 +86,7 @@ int main()
     }
 
     led_update_function_data_t *data = new_led_update_function_data_t();
-    data->update_function = led_update_piano_normal;
+    data->current_pattern = PIANO_NORMAL;
     data->consumer = consumer;
 
     while(1)

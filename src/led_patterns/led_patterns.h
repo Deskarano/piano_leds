@@ -6,10 +6,17 @@
 
 typedef void (*led_update_function)(struct led_update_function_data *);
 
+typedef enum PATTERN
+{
+    NONE,
+    PIANO_NORMAL,
+    PIANO_WAR
+} PATTERN;
+
 typedef struct led_update_function_data
 {
-    led_update_function update_function;
-    led_update_function prev_update_function;
+    PATTERN current_pattern;
+    PATTERN last_pattern;
 
     void *pattern_data;
 
