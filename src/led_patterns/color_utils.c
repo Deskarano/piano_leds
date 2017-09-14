@@ -1,8 +1,7 @@
 #include "color_utils.h"
 
-#include <time.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <time.h>
 #include <math.h>
 
 /**
