@@ -10,6 +10,7 @@
 typedef struct led_update_piano_ambient_data
 {
     unsigned int last_color;      /**< The last color used by the led_update_piano_normal function*/
+    double factors[LED_COUNT];
 } led_update_piano_ambient_data_t;
 
 typedef struct led_update_piano_gradient_data
@@ -24,6 +25,11 @@ void *new_led_update_ambient_normal_data_t()
 
     //set everything to 0
     ret->last_color = 0;
+
+    for(int i = 0; i < LED_COUNT; i++)
+    {
+        ret->factors[i] = ((double) (random() % 100) + 50) /100;
+    }
 
     return ret;
 }
@@ -42,6 +48,7 @@ void *new_led_update_ambient_gradient_data_t()
 void led_update_ambient_normal(led_update_function_data_t *data)
 {
     unsigned int color = ((led_update_piano_ambient_data_t *) data->pattern_data)->last_color;
+    double *factors = ((led_update_piano_ambient_data_t *) data->pattern_data)->factors;
 
     if(color == 0)
     {
@@ -60,10 +67,7 @@ void led_update_ambient_normal(led_update_function_data_t *data)
     for(int i = 0; i < LED_COUNT; i++)
     {
         //introduce some randomness
-        unsigned int adj_color = random_near_color(color,
-                                                   RAND_COLOR_THRESHOLD * 3,
-                                                   RAND_COLOR_THRESHOLD * 3,
-                                                   RAND_COLOR_THRESHOLD * 3);
+        unsigned int adj_color = adjacent_color(color, factors[i]);
 
         //copy color to led_states[]
         data->led_states[i] = adj_color;
