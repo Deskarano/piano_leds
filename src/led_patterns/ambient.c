@@ -67,6 +67,8 @@ void led_update_ambient_normal(led_update_function_data_t *data)
         //copy color to led_states[]
         data->led_states[i] = adj_color;
     }
+
+    ((led_update_piano_ambient_data_t *) data->pattern_data)->last_color = color;
 }
 
 void led_update_ambient_gradient(led_update_function_data_t *data)
@@ -110,4 +112,7 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
                                                   (unsigned char) (int_b + i * slope_b),
                                                   (unsigned char) (int_g + i * slope_g));
     }
+
+    ((led_update_ambient_gradient_data_t *) data->pattern_data)->left_color = left_color;
+    ((led_update_ambient_gradient_data_t *) data->pattern_data)->right_color = right_color;
 }
