@@ -3,7 +3,8 @@
 #include <pthread.h>
 
 #include "src/globals.h"
-#include "src/led_patterns/led_patterns_piano.h"
+#include "src/led_patterns/piano.h"
+#include "src/led_patterns/utils.h"
 #include "src/rpi_ws281x/ws2811.h"
 #include "src/pipe/pipe.h"
 
@@ -86,10 +87,7 @@ int main()
     }
 
     led_update_function_data_t *data = new_led_update_function_data_t();
-    data->current_pattern = PIANO_WAR;
-    data->current_update_function = led_update_piano_war;
-    data->new_current_update_function_data = new_led_update_piano_war_data;
-    data->consumer = consumer;
+    set_data_for_pattern(data, PIANO_NORMAL);
 
     while(1)
     {

@@ -1,4 +1,4 @@
-#include "led_patterns_ambient.h"
+#include "ambient.h"
 #include "color_utils.h"
 
 #include <stdlib.h>

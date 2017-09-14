@@ -1,4 +1,4 @@
-#include "led_patterns_piano.h"
+#include "piano.h"
 #include "color_utils.h"
 #include "../pipe/pipe.h"
 
