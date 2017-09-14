@@ -52,7 +52,7 @@ int main()
     if(snd_rawmidi_open(&midi_in, NULL, "hw:1,0,0", SND_RAWMIDI_SYNC) < 0)
     {
         fprintf(stderr, "snd_rawmidi_open failed");
-        exit(1);
+        //exit(1);
     }
 
     midi_collector_thread_arg *arg = malloc(sizeof(midi_collector_thread_arg));
@@ -77,7 +77,7 @@ int main()
     if(ws2811_init(led_string) != WS2811_SUCCESS)
     {
         fprintf(stderr, "ws2811_init failed");
-        exit(1);
+        //exit(1);
     }
 
     for(int i = 0; i < LED_COUNT; i++)

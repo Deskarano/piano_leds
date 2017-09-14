@@ -2,6 +2,7 @@
 #include "color_utils.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct led_update_piano_normal_data
 {
@@ -68,6 +69,8 @@ led_update_function_data_t *new_led_update_function_data_t()
 
 void run_led_update_function(led_update_function_data_t *data)
 {
+    printf("Entrance: data->last_pattern = %i, data->current_pattern = %i\n", data->last_pattern,
+           data->current_pattern);
     //reset buffer
     data->buffer[0] = 0;
     data->buffer[1] = 0;
@@ -75,6 +78,16 @@ void run_led_update_function(led_update_function_data_t *data)
     if(data->last_pattern == NONE)
     {
         data->last_pattern = data->current_pattern;
+
+        if(data->current_pattern == PIANO_NORMAL)
+        {
+            data->pattern_data = new_led_update_piano_normal_data();
+        }
+
+        if(data->current_pattern == PIANO_WAR)
+        {
+            data->pattern_data = new_led_update_piano_war_data();
+        }
     }
 
     if(data->current_pattern != data->last_pattern)
