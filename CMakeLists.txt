@@ -7,6 +7,7 @@ set(SOURCE_FILES_PIANO
         main_piano.c
         src/globals.h
 
+        src/led_patterns/led_patterns_core.c
         src/led_patterns/led_patterns_piano.c
         src/led_patterns/color_utils.c
 
@@ -28,6 +29,7 @@ set(SOURCE_FILES_AMBIENT
         main_ambient.c
         src/globals.h
 
+        src/led_patterns/led_patterns_core.c
         src/led_patterns/led_patterns_ambient.c
         src/led_patterns/color_utils.c
 
@@ -40,5 +42,4 @@ set(SOURCE_FILES_AMBIENT
 
         src/rpi_ws281x/clk.h
         src/rpi_ws281x/gpio.h)
-
 add_executable(ambient_leds ${SOURCE_FILES_AMBIENT})
