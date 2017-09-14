@@ -1,8 +1,7 @@
 #include "color_utils.h"
 
-#include <time.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <time.h>
 #include <math.h>
 
 unsigned char extract_red(unsigned int color)
@@ -87,5 +86,5 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
         g -= dg;
     }
 
-    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
+    return color_from_channels(r, g, b);
 }
