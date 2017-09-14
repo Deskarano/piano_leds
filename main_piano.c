@@ -93,6 +93,11 @@ int main()
     {
         run_led_update_function(data);
 
+        for(int i = 0; i < LED_COUNT; i++)
+        {
+            led_string->channel[0].leds[i] = data->led_states[i];
+        }
+
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
             fprintf(stderr, "ws2811_render failed");
