@@ -11,7 +11,7 @@ led_update_function_data_t *new_led_update_function_data_t()
     ret->last_pattern = NONE;
     ret->pattern_data = NULL;
 
-    ret->consumer = NULL;
+    ret->data_pipe = NULL;
 
     return ret;
 }

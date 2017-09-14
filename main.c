@@ -88,7 +88,7 @@ int main()
 
     led_update_function_data_t *data = new_led_update_function_data_t();
     set_data_for_pattern(data, PIANO_NORMAL);
-    data->consumer = consumer;
+    data->data_pipe = consumer;
 
     while(1)
     {

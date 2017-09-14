@@ -27,7 +27,7 @@ typedef struct led_update_function_data
     unsigned int led_states[LED_COUNT];
     unsigned char buffer[2];
 
-    void *consumer;
+    void *data_pipe;
 } led_update_function_data_t;
 
 led_update_function_data_t *new_led_update_function_data_t();
