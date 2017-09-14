@@ -14,6 +14,8 @@ typedef enum PATTERN
     AMBIENT_NORMAL
 } PATTERN;
 
+struct led_update_function_data;
+
 /**
  * Custom type for functions that act as LED update functions
  */
