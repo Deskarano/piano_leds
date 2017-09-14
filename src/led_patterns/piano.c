@@ -58,7 +58,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
 {
     led_update_piano_normal_data_t *pattern_data = (led_update_piano_normal_data_t *) data->pattern_data;
 
-    if(pipe_size((pipe_generic_t *) data->consumer) > 0)
+    if(pipe_size((pipe_generic_t *) data->data_pipe) > 0)
     {
         unsigned int color = pattern_data->last_color;
 
@@ -74,13 +74,13 @@ void led_update_piano_normal(led_update_function_data_t *data)
                                       RAND_COLOR_THRESHOLD);
         }
 
-        while(pipe_size((pipe_generic_t *) data->consumer) > 0)
+        while(pipe_size((pipe_generic_t *) data->data_pipe) > 0)
         {
-            pipe_pop(data->consumer, data->buffer, 1);
+            pipe_pop(data->data_pipe, data->buffer, 1);
 
             if(data->buffer[0] == 144)
             {
-                pipe_pop(data->consumer, data->buffer, 2);
+                pipe_pop(data->data_pipe, data->buffer, 2);
 
                 if(data->buffer[1] > 0)
                 {
@@ -101,7 +101,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
 
             if(data->buffer[0] == 176)
             {
-                pipe_pop(data->consumer, data->buffer, 2);
+                pipe_pop(data->data_pipe, data->buffer, 2);
 
                 if(data->buffer[1] > 0)
                 {
@@ -238,13 +238,13 @@ void led_update_piano_war(led_update_function_data_t *data)
     int left_count = 0;
     int right_count = 0;
 
-    while(pipe_size((pipe_generic_t *) data->consumer) > 0)
+    while(pipe_size((pipe_generic_t *) data->data_pipe) > 0)
     {
-        pipe_pop(data->consumer, data->buffer, 1);
+        pipe_pop(data->data_pipe, data->buffer, 1);
 
         if(data->buffer[0] == 144)
         {
-            pipe_pop(data->consumer, data->buffer, 2);
+            pipe_pop(data->data_pipe, data->buffer, 2);
 
             if(data->buffer[1] > 0)
             {
