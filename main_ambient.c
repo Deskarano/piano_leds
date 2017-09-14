@@ -36,15 +36,16 @@ int main()
     data->current_pattern = AMBIENT_NORMAL;
     data->current_update_function = led_update_ambient_normal;
     data->new_current_update_function_data = new_led_update_ambient_normal_data;
-    
+
     while(1)
     {
-
+        run_led_update_function(data);
+        
         for(int i = 0; i < LED_COUNT; i++)
         {
             led_string->channel[0].leds[i] = data->led_states[i];
         }
-        
+
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
             fprintf(stderr, "ws2811_render failed");
