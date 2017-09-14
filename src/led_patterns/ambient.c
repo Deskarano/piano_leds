@@ -29,7 +29,12 @@ void *new_led_update_ambient_normal_data_t()
 
 void *new_led_update_ambient_gradient_data_t()
 {
+    led_update_ambient_gradient_data_t *ret = malloc(sizeof(led_update_ambient_gradient_data_t));
 
+    ret->left_color = 0;
+    ret->right_color = 0;
+
+    return ret;
 }
 
 void led_update_ambient_normal(led_update_function_data_t *data)
