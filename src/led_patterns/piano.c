@@ -22,7 +22,7 @@ typedef struct led_update_piano_war_data
     int locked[LED_COUNT];
 } led_update_piano_war_data_t;
 
-void *new_led_update_piano_normal_data()
+void *new_led_update_piano_normal_data_t()
 {
     led_update_piano_normal_data_t *ret = malloc(sizeof(led_update_piano_normal_data_t));
 
@@ -38,7 +38,7 @@ void *new_led_update_piano_normal_data()
     return ret;
 }
 
-void *new_led_update_piano_war_data()
+void *new_led_update_piano_war_data_t()
 {
     led_update_piano_war_data_t *ret = malloc(sizeof(led_update_piano_war_data_t));
 

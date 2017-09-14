@@ -3,8 +3,8 @@
 
 #include "core.h"
 
-void *new_led_update_piano_normal_data();
-void *new_led_update_piano_war_data();
+void *new_led_update_piano_normal_data_t();
+void *new_led_update_piano_war_data_t();
 
 void led_update_piano_normal(led_update_function_data_t *);
 void led_update_piano_war(led_update_function_data_t *);

@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-void set_data_for_pattern(led_update_function_data_t *data, PATTERN pattern)
+void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
 {
     for(int i = 0; i < LED_COUNT; i++)
     {
@@ -26,14 +26,14 @@ void set_data_for_pattern(led_update_function_data_t *data, PATTERN pattern)
             data->current_pattern = PIANO_NORMAL;
             data->last_pattern = NONE;
             data->current_update_function = led_update_piano_normal;
-            data->pattern_data = new_led_update_piano_normal_data();
+            data->pattern_data = new_led_update_piano_normal_data_t();
             break;
 
         case PIANO_WAR:
             data->current_pattern = PIANO_WAR;
             data->last_pattern = NONE;
             data->current_update_function = led_update_piano_war;
-            data->pattern_data = new_led_update_piano_war_data();
+            data->pattern_data = new_led_update_piano_war_data_t();
             break;
 
         case AMBIENT_NORMAL:

@@ -8,9 +8,9 @@ set(SOURCE_FILES_SMART_LEDS
         src/globals.h
 
         src/led_patterns/core.c
-        src/led_patterns/utils.c
         src/led_patterns/piano.c
         src/led_patterns/ambient.c
+        src/led_patterns/utils.c
         src/led_patterns/color_utils.c
 
         src/rpi_ws281x/dma.c
