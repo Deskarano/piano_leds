@@ -2,7 +2,6 @@
 #include "color_utils.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 /**
  * Internal struct to hold all working data for the led_update_ambient_normal function
@@ -101,8 +100,6 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
         right_color = random_near_color(right_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
     }
 
-    printf("left_color = %#08x\tright_color = %#08x\n", left_color, right_color);
-
     //find slopes and intercepts
     double slope_r = ((double) extract_red(right_color) - (double) extract_red(left_color)) / LED_COUNT;
     double slope_b = ((double) extract_blue(right_color) - (double) extract_blue(left_color)) / LED_COUNT;
@@ -111,10 +108,6 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
     unsigned char int_r = extract_red(left_color);
     unsigned char int_b = extract_blue(left_color);
     unsigned char int_g = extract_green(left_color);
-
-    printf("r = i * %f + %#08x\n", slope_r, int_r);
-    printf("b = i * %f + %#08x\n", slope_b, int_b);
-    printf("g = i * %f + %#08x\n", slope_g, int_g);
 
     //create a smooth gradient
     for(int i = 0; i < LED_COUNT; i++)
