@@ -28,7 +28,7 @@ void *new_led_update_ambient_normal_data_t()
 
     for(int i = 0; i < LED_COUNT; i++)
     {
-        ret->factors[i] = ((double) (random() % 100) + 50) /100;
+        ret->factors[i] = ((double) (random() % 50) + 75) / 100;
     }
 
     return ret;
