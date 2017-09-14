@@ -14,6 +14,9 @@ typedef enum PATTERN
     AMBIENT_NORMAL
 } PATTERN;
 
+/**
+ * Behind the scenes struct for led_update_function_data_t
+ */
 struct led_update_function_data;
 
 /**
@@ -28,29 +31,20 @@ typedef void *(*new_led_pattern_function_data)();
 
 /**
  * Struct to hold all necessary information to run the LED strip on a certain mode
- *
- * @param current_pattern The current LED pattern being used
- * @param last_pattern The LED pattern being run in the last cycle
- * @param led_pattern_function The current LED update function being used
- * @param new_led_pattern_function_data The current LED update function data generator
- * @param pattern_data Pointer to an LED pattern-specific data struct
- * @param led_states[] The array containing current LED states to be written to the strip
- * @param buffer[2] A buffer used for internal operations
- * @param data_pipe A pointer to a communications related struct, if needed
  */
 typedef struct led_update_function_data
 {
-    PATTERN current_pattern;
-    PATTERN last_pattern;
+    PATTERN current_pattern;                        /**< The current LED pattern to run */
+    PATTERN last_pattern;                           /**< The last iteration's LED pattern */
 
-    led_pattern_function current_update_function;
+    led_pattern_function current_update_function;   /**< The current LED update function */
 
-    void *pattern_data;
+    void *pattern_data;                             /**< Pointer to LED update function specific data */
 
-    unsigned int led_states[LED_COUNT];
-    unsigned char buffer[2];
+    unsigned int led_states[LED_COUNT];             /**< At the end of every iteration, contains states of LEDs */
+    unsigned char buffer[2];                        /**< The current LED pattern to run */
 
-    void *data_pipe;
+    void *data_pipe;                                /**< An optional data type for update function communication */
 } led_update_function_data_t;
 
 /**
