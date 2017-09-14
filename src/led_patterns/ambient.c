@@ -10,9 +10,12 @@ typedef struct led_update_piano_ambient_data
 
 void *new_led_update_ambient_normal_data()
 {
+    led_update_piano_ambient_data_t *ret = malloc(sizeof(led_update_piano_ambient_data_t));
 
+    ret->last_color = 0;
+    
+    return ret;
 }
-
 
 void led_update_ambient_normal(led_update_function_data_t *data)
 {
