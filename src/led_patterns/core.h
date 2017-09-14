@@ -9,17 +9,16 @@ typedef enum PATTERN
     PIANO_NORMAL,
     PIANO_WAR,
     AMBIENT_NORMAL
-} PATTERN;
+} Pattern;
 
 struct led_update_function_data;
 
 typedef void (*led_pattern_function)(struct led_update_function_data *);
-typedef void *(*new_led_pattern_function_data)();
 
 typedef struct led_update_function_data
 {
-    PATTERN current_pattern;
-    PATTERN last_pattern;
+    Pattern current_pattern;
+    Pattern last_pattern;
 
     led_pattern_function current_update_function;
 
