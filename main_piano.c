@@ -4,7 +4,7 @@
 
 #include "src/globals.h"
 
-#include "src/led_patterns/led_patterns.h"
+#include "src/led_patterns/led_patterns_piano.h"
 #include "src/rpi_ws281x/ws2811.h"
 
 typedef struct midi_collector_thread_arg
