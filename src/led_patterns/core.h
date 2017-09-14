@@ -32,7 +32,6 @@ typedef struct led_update_function_data
 
 led_update_function_data_t *new_led_update_function_data_t();
 
-
 void run_led_update_function(led_update_function_data_t *);
 
 #endif //SMART_LEDS_LED_PATTERNS_CORE_H

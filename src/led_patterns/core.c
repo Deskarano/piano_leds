@@ -38,11 +38,3 @@ void run_led_update_function(led_update_function_data_t *data)
 
     data->last_pattern = data->current_pattern;
 }
-
-void set_data_for_pattern(led_update_function_data_t *data, PATTERN pattern)
-{
-    switch(pattern)
-    {
-
-    }
-}
