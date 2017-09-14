@@ -11,6 +11,8 @@ typedef enum PATTERN
     AMBIENT_NORMAL
 } PATTERN;
 
+struct led_update_function_data;
+
 typedef void (*led_pattern_function)(struct led_update_function_data *);
 typedef void *(*new_led_pattern_function_data)();
 

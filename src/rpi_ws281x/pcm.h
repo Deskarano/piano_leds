@@ -68,7 +68,7 @@ typedef struct
 #define RPI_PCM_CS_TXSYNC                       (1 << 13)
 #define RPI_PCM_CS_DMAEN                        (1 << 9)
 #define RPI_PCM_CS_RXTHR(val)                   (((val) & 0x03) << 7)
-#define RPI_PCM_CS_TXTHR(val)                   ((val & 0x03) << 5)
+#define RPI_PCM_CS_TXTHR(val)                   (((val) & 0x03) << 5)
 #define RPI_PCM_CS_RXCLR                        (1 << 4)
 #define RPI_PCM_CS_TXCLR                        (1 << 3)
 #define RPI_PCM_CS_TXON                         (1 << 2)
