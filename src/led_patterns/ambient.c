@@ -97,6 +97,8 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
         right_color = random_near_color(right_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
     }
 
+    printf("left_color = %#08x\tright_color = %#08x\n", left_color, right_color);
+
     //find slopes and intercepts
     double slope_r = ((double) extract_red(right_color) - (double) extract_red(left_color)) / LED_COUNT;
     double slope_b = ((double) extract_blue(right_color) - (double) extract_blue(left_color)) / LED_COUNT;
