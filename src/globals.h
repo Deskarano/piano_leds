@@ -8,7 +8,7 @@
 #define LED_COUNT               88
 #define UPDATES_PER_SEC         16
 
-#define DECAY_IF_SUSTAIN        .95
+#define DECAY_IF_SUSTAIN        .99
 #define DECAY_IF_N_SUSTAIN      .5
 
 #define RAND_COLOR_THRESHOLD    4
