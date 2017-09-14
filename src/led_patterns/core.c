@@ -6,10 +6,10 @@ led_update_function_data_t *new_led_update_function_data_t()
 {
     led_update_function_data_t *ret = malloc(sizeof(led_update_function_data_t));
 
+    //set up all values to defaults
     ret->current_pattern = NONE;
     ret->last_pattern = NONE;
     ret->pattern_data = NULL;
-
     ret->data_pipe = NULL;
 
     return ret;
@@ -21,17 +21,20 @@ void run_led_update_function(led_update_function_data_t *data)
     data->buffer[0] = 0;
     data->buffer[1] = 0;
 
+    //set up data for first use
     if(data->last_pattern == NONE)
     {
         data->last_pattern = data->current_pattern;
         set_data_for_pattern(data, data->current_pattern);
     }
 
+    //set up data if the LED pattern changed
     if(data->current_pattern != data->last_pattern)
     {
         set_data_for_pattern(data, data->current_pattern);
     }
 
+    //run the update function and update last_pattern
     data->current_update_function(data);
     data->last_pattern = data->current_pattern;
 }
