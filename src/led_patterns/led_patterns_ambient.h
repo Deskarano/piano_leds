@@ -1,4 +1,8 @@
 #ifndef PIANO_LEDS_LED_PATTERNS_AMBIENT_H
 #define PIANO_LEDS_LED_PATTERNS_AMBIENT_H
 
+#include <led_patterns_core.h>
+
+
+
 #endif //PIANO_LEDS_LED_PATTERNS_AMBIENT_H

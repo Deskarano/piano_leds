@@ -1,8 +1,8 @@
 #include "led_patterns_piano.h"
 #include "color_utils.h"
+#include "../pipe/pipe.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 typedef struct led_update_piano_normal_data
 {
@@ -22,7 +22,7 @@ typedef struct led_update_piano_war_data
     int locked[LED_COUNT];
 } led_update_piano_war_data_t;
 
-led_update_piano_normal_data_t *new_led_update_piano_normal_data()
+void *new_led_update_piano_normal_data()
 {
     led_update_piano_normal_data_t *ret = malloc(sizeof(led_update_piano_normal_data_t));
 
@@ -38,7 +38,7 @@ led_update_piano_normal_data_t *new_led_update_piano_normal_data()
     return ret;
 }
 
-led_update_piano_war_data_t *new_led_update_piano_war_data()
+void *new_led_update_piano_war_data()
 {
     led_update_piano_war_data_t *ret = malloc(sizeof(led_update_piano_war_data_t));
 
@@ -52,75 +52,6 @@ led_update_piano_war_data_t *new_led_update_piano_war_data()
     }
 
     return ret;
-}
-
-led_update_function_data_t *new_led_update_function_data_t()
-{
-    led_update_function_data_t *ret = malloc(sizeof(led_update_function_data_t));
-
-    ret->current_pattern = NONE;
-    ret->last_pattern = NONE;
-    ret->pattern_data = NULL;
-
-    ret->consumer = NULL;
-
-    return ret;
-}
-
-void run_led_update_function(led_update_function_data_t *data)
-{
-    printf("Entrance: data->last_pattern = %i, data->current_pattern = %i\n", data->last_pattern,
-           data->current_pattern);
-    //reset buffer
-    data->buffer[0] = 0;
-    data->buffer[1] = 0;
-
-    if(data->last_pattern == NONE)
-    {
-        data->last_pattern = data->current_pattern;
-
-        if(data->current_pattern == PIANO_NORMAL)
-        {
-            data->pattern_data = new_led_update_piano_normal_data();
-        }
-
-        if(data->current_pattern == PIANO_WAR)
-        {
-            data->pattern_data = new_led_update_piano_war_data();
-        }
-    }
-
-    if(data->current_pattern != data->last_pattern)
-    {
-        if(data->pattern_data != NULL) free(data->pattern_data);
-
-        if(data->current_pattern == PIANO_NORMAL)
-        {
-            data->pattern_data = new_led_update_piano_normal_data();
-        }
-
-        if(data->current_pattern == PIANO_WAR)
-        {
-            data->pattern_data = new_led_update_piano_war_data();
-        }
-    }
-
-    switch(data->current_pattern)
-    {
-        case PIANO_NORMAL:
-            led_update_piano_normal(data);
-            break;
-
-        case PIANO_WAR:
-            led_update_piano_war(data);
-            break;
-
-        case NONE:
-            //something weird happened, we should probably just crash
-            exit(24601);
-    }
-
-    data->last_pattern = data->current_pattern;
 }
 
 void led_update_piano_normal(led_update_function_data_t *data)
