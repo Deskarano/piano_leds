@@ -5,21 +5,47 @@
 #include <stdio.h>
 #include <math.h>
 
+/**
+ * Returns the red channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The red channel value
+ */
 unsigned char extract_red(unsigned int color)
 {
     return (unsigned char) (color & 0xFF);
 }
 
+/**
+ * Returns the blue channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The blue channel value
+ */
 unsigned char extract_blue(unsigned int color)
 {
     return (unsigned char) ((color >> 8) & 0xFF);
 }
 
+/**
+ * Returns the green channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The green channel value
+ */
 unsigned char extract_green(unsigned int color)
 {
     return (unsigned char) ((color >> 16) & 0xFF);
 }
 
+/**
+ * Turns individual color channels back into one color value
+ *
+ * @param r The red channel value
+ * @param b The blue channel value
+ * @param g The green channel value
+ * @return The complete color
+ */
 unsigned int color_from_channels(unsigned char r, unsigned char b, unsigned char g)
 {
     return (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
@@ -92,5 +118,5 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
         g -= dg;
     }
 
-    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
+    return color_from_channels(r, g, b);
 }
