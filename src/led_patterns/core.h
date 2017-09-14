@@ -44,7 +44,6 @@ typedef struct led_update_function_data
     PATTERN last_pattern;
 
     led_pattern_function current_update_function;
-    new_led_pattern_function_data new_current_update_function_data;
 
     void *pattern_data;
 
