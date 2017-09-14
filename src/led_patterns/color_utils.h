@@ -1,6 +1,11 @@
 #ifndef SMART_LEDS_LED_PATTERNS_COLOR_UTILS_H
 #define SMART_LEDS_LED_PATTERNS_COLOR_UTILS_H
 
+unsigned char extract_red(unsigned int color);
+unsigned char extract_blue(unsigned int color);
+unsigned char extract_green(unsigned int color);
+unsigned int color_from_channels(unsigned char r, unsigned char b, unsigned char g);
+
 /**
  * Normalizes a color so that the maximum color channel is equal to max_intensity
  * @param color The color to change
