@@ -1,6 +1,5 @@
-#include "core.h"
+#include "utils.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 
 led_update_function_data_t *new_led_update_function_data_t()
@@ -25,16 +24,14 @@ void run_led_update_function(led_update_function_data_t *data)
     if(data->last_pattern == NONE)
     {
         data->last_pattern = data->current_pattern;
-        data->pattern_data = data->new_current_update_function_data();
+        set_data_for_pattern(data, data->current_pattern);
     }
 
     if(data->current_pattern != data->last_pattern)
     {
-        if(data->pattern_data != NULL) free(data->pattern_data);
-        data->pattern_data = data->new_current_update_function_data();
+        set_data_for_pattern(data, data->current_pattern);
     }
 
     data->current_update_function(data);
-
     data->last_pattern = data->current_pattern;
 }
