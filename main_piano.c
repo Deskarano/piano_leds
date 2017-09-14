@@ -83,7 +83,7 @@ int main()
         led_string->channel[0].leds[i] = 0;
     }
 
-    led_update_function_data_t *data = malloc(sizeof(led_update_function_data_t));
+    led_update_function_data_t *data = new_led_update_function_data_t();
     data->update_function = led_update_piano_normal;
     data->consumer = consumer;
 

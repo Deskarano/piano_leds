@@ -53,6 +53,19 @@ led_update_piano_war_data_t *new_led_update_piano_war_data()
     return ret;
 }
 
+led_update_function_data_t *new_led_update_function_data_t()
+{
+    led_update_function_data_t *ret = malloc(sizeof(led_update_function_data_t));
+
+    ret->update_function = NULL;
+    ret->prev_update_function = NULL;
+    ret->pattern_data = NULL;
+
+    ret->consumer = NULL;
+
+    return ret;
+}
+
 void run_led_update_function(led_update_function_data_t *data)
 {
     //reset buffer
@@ -79,16 +92,7 @@ void run_led_update_function(led_update_function_data_t *data)
         }
     }
 
-    if(data->update_function == led_update_piano_normal)
-    {
-        led_update_piano_normal(data);
-    }
-
-    if(data->update_function == led_update_piano_war)
-    {
-        led_update_piano_war(data);
-    }
-
+    data->update_function(data);
     data->prev_update_function = data->update_function;
 }
 
