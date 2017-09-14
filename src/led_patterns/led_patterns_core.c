@@ -1,5 +1,4 @@
-#include "led_patterns_piano.h"
-#include "led_patterns_ambient.h"
+#include "led_patterns_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,47 +25,16 @@ void run_led_update_function(led_update_function_data_t *data)
     if(data->last_pattern == NONE)
     {
         data->last_pattern = data->current_pattern;
-
-        if(data->current_pattern == PIANO_NORMAL)
-        {
-            data->pattern_data = new_led_update_piano_normal_data();
-        }
-
-        if(data->current_pattern == PIANO_WAR)
-        {
-            data->pattern_data = new_led_update_piano_war_data();
-        }
+        data->pattern_data = data->new_current_update_function_data();
     }
 
     if(data->current_pattern != data->last_pattern)
     {
         if(data->pattern_data != NULL) free(data->pattern_data);
-
-        if(data->current_pattern == PIANO_NORMAL)
-        {
-            data->pattern_data = new_led_update_piano_normal_data();
-        }
-
-        if(data->current_pattern == PIANO_WAR)
-        {
-            data->pattern_data = new_led_update_piano_war_data();
-        }
+        data->pattern_data = data->new_current_update_function_data();
     }
 
-    switch(data->current_pattern)
-    {
-        case PIANO_NORMAL:
-            led_update_piano_normal(data);
-            break;
-
-        case PIANO_WAR:
-            led_update_piano_war(data);
-            break;
-
-        case NONE:
-            //something weird happened, we should probably just crash
-            exit(24601);
-    }
+    data->current_update_function(data);
 
     data->last_pattern = data->current_pattern;
 }

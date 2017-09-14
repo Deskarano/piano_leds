@@ -3,8 +3,6 @@
 
 #include "../globals.h"
 
-typedef void (*led_update_function)(struct led_update_function_data *);
-
 typedef enum PATTERN
 {
     NONE,
@@ -12,10 +10,16 @@ typedef enum PATTERN
     PIANO_WAR
 } PATTERN;
 
+typedef void (*led_pattern_function)(struct led_update_function_data *);
+typedef void *(*new_led_pattern_function_data)();
+
 typedef struct led_update_function_data
 {
     PATTERN current_pattern;
     PATTERN last_pattern;
+
+    led_pattern_function current_update_function;
+    new_led_pattern_function_data new_current_update_function_data;
 
     void *pattern_data;
 

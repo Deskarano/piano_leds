@@ -1,6 +1,6 @@
 #include "src/globals.h"
 #include "src/rpi_ws281x/ws2811.h"
-#include "src/led_patterns/color_utils.h"
+#include "src/led_patterns/led_patterns_ambient.h"
 
 #include <stdio.h>
 #include <stdlib.h>
