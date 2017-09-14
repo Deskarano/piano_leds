@@ -3,9 +3,9 @@
 #include <pthread.h>
 
 #include "src/globals.h"
-
 #include "src/led_patterns/led_patterns_piano.h"
 #include "src/rpi_ws281x/ws2811.h"
+#include "src/pipe/pipe.h"
 
 typedef struct midi_collector_thread_arg
 {
@@ -86,7 +86,9 @@ int main()
     }
 
     led_update_function_data_t *data = new_led_update_function_data_t();
-    data->current_pattern = PIANO_NORMAL;
+    data->current_pattern = PIANO_WAR;
+    data->current_update_function = led_update_piano_war;
+    data->new_current_update_function_data = new_led_update_piano_war_data;
     data->consumer = consumer;
 
     while(1)
