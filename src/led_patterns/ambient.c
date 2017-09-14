@@ -71,9 +71,11 @@ void led_update_ambient_normal(led_update_function_data_t *data)
 
 void led_update_ambient_gradient(led_update_function_data_t *data)
 {
+    //store colors in local variables so less typing
     unsigned int left_color = ((led_update_ambient_gradient_data_t *) data->pattern_data)->left_color;
     unsigned int right_color = ((led_update_ambient_gradient_data_t *) data->pattern_data)->right_color;
 
+    //generate new colors or modify the given ones
     if(left_color == 0)
     {
         left_color = (unsigned int) random() % 0xFFFFFF;
@@ -92,6 +94,7 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
         right_color = random_near_color(right_color, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD, RAND_COLOR_THRESHOLD);
     }
 
+    //find slopes and intercepts
     double slope_r = ((double) extract_red(right_color) - (double) extract_red(left_color)) / LED_COUNT;
     double slope_b = ((double) extract_blue(right_color) - (double) extract_blue(left_color)) / LED_COUNT;
     double slope_g = ((double) extract_green(right_color) - (double) extract_green(left_color)) / LED_COUNT;
@@ -100,6 +103,7 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
     double int_b = (double) extract_blue(left_color);
     double int_g = (double) extract_green(left_color);
 
+    //create a smooth gradient
     for(int i = 0; i < LED_COUNT; i++)
     {
         data->led_states[i] = color_from_channels((unsigned char) (int_r + i * slope_r),
