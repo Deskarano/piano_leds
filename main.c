@@ -37,6 +37,8 @@ void *midi_collector_thread(void *arg)
     }
 }
 
+
+//merged
 int main()
 {
     //init pipes
