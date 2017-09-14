@@ -5,9 +5,6 @@ set(CMAKE_C_FLAGS "-lasound -lpthread -lm")
 
 set(SOURCE_FILES_PIANO
         main_piano.c
-        globals.h
-set(SOURCE_FILES_PIANO
-        main_piano.c
         src/globals.h
 
         src/led_patterns/led_patterns.c

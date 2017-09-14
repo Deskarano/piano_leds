@@ -106,7 +106,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
         }
         else
         {
-            color = random_near_color(data->piano_normal->last_color,
+            color = random_near_color(pattern_data->last_color,
                                       RAND_COLOR_THRESHOLD,
                                       RAND_COLOR_THRESHOLD,
                                       RAND_COLOR_THRESHOLD);
@@ -147,7 +147,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
                 }
                 else
                 {
-                    data->piano_normal->sustain = 0;
+                    pattern_data->sustain = 0;
                 }
             }
 
@@ -203,7 +203,7 @@ void led_update_piano_war(led_update_function_data_t *data)
 
                 if(pattern_data->size[i])
                 {
-                    data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                    pattern_data->colors[i] = random_near_color(pattern_data->colors[i],
                                                                    RAND_COLOR_THRESHOLD,
                                                                    RAND_COLOR_THRESHOLD,
                                                                    RAND_COLOR_THRESHOLD);
@@ -232,7 +232,7 @@ void led_update_piano_war(led_update_function_data_t *data)
 
                     if(pattern_data->size[i])
                     {
-                        data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                        pattern_data->colors[i] = random_near_color(pattern_data->colors[i],
                                                                        RAND_COLOR_THRESHOLD,
                                                                        RAND_COLOR_THRESHOLD,
                                                                        RAND_COLOR_THRESHOLD);
