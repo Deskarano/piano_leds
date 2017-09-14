@@ -50,7 +50,9 @@ led_update_function_data_t *new_led_update_function_data_t();
 
 /**
  * Function which takes an led_update_function_data_t and runs the LED pattern specified by it
+ *
+ * @param data The data for the LED pattern to run
  */
-void run_led_update_function(led_update_function_data_t *);
+void run_led_update_function(led_update_function_data_t *data);
 
 #endif //SMART_LEDS_LED_PATTERNS_CORE_H

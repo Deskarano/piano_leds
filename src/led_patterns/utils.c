@@ -6,13 +6,16 @@
 
 void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
 {
+    //wipe LED states
     for(int i = 0; i < LED_COUNT; i++)
     {
         data->led_states[i] = 0;
     }
 
+    //free up memory if we can
     if(data->pattern_data != NULL) free(data->pattern_data);
 
+    //switch through patterns and set up the one that matches
     switch(pattern)
     {
         case NONE:
