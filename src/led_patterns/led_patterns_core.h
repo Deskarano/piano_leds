@@ -1,5 +1,5 @@
-#ifndef PIANO_LEDS_LED_PATTERNS_CORE_H_H
-#define PIANO_LEDS_LED_PATTERNS_CORE_H_H
+#ifndef PIANO_LEDS_LED_PATTERNS_CORE_H
+#define PIANO_LEDS_LED_PATTERNS_CORE_H
 
 #include "../globals.h"
 
@@ -29,4 +29,4 @@ led_update_function_data_t *new_led_update_function_data_t();
 
 void run_led_update_function(led_update_function_data_t *);
 
-#endif //PIANO_LEDS_LED_PATTERNS_CORE_H_H
+#endif //PIANO_LEDS_LED_PATTERNS_CORE_H
