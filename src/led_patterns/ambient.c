@@ -31,6 +31,7 @@ void *new_led_update_ambient_gradient_data_t()
 {
     led_update_ambient_gradient_data_t *ret = malloc(sizeof(led_update_ambient_gradient_data_t));
 
+    //set everything to 0
     ret->left_color = 0;
     ret->right_color = 0;
 
