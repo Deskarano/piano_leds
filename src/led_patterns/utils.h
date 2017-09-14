@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-void set_data_for_pattern(led_update_function_data_t *, PATTERN);
+void set_data_for_pattern(led_update_function_data_t *, Pattern);
 
 #endif //PIANO_LEDS_UTILS_H

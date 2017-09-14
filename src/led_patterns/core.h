@@ -12,7 +12,7 @@ typedef enum PATTERN
     PIANO_NORMAL,
     PIANO_WAR,
     AMBIENT_NORMAL
-} PATTERN;
+} Pattern;
 
 /**
  * Behind the scenes struct for led_update_function_data_t
@@ -25,17 +25,12 @@ struct led_update_function_data;
 typedef void (*led_pattern_function)(struct led_update_function_data *);
 
 /**
- * Custom type for functions that create LED update function data
- */
-typedef void *(*new_led_pattern_function_data)();
-
-/**
  * Struct to hold all necessary information to run the LED strip on a certain mode
  */
 typedef struct led_update_function_data
 {
-    PATTERN current_pattern;                        /**< The current LED pattern to run */
-    PATTERN last_pattern;                           /**< The last iteration's LED pattern */
+    Pattern current_pattern;
+    Pattern last_pattern;
 
     led_pattern_function current_update_function;   /**< The current LED update function */
 
