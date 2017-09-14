@@ -32,33 +32,19 @@ int main()
         led_string->channel[0].leds[i] = 0;
     }
 
-    srandom((unsigned int) time(NULL));
-
-    unsigned int color = 0;
-
+    led_update_function_data_t *data = new_led_update_function_data_t();
+    data->current_pattern = AMBIENT_NORMAL;
+    data->current_update_function = led_update_ambient_normal;
+    data->new_current_update_function_data = new_led_update_ambient_normal_data;
+    
     while(1)
     {
-        if(color == 0)
-        {
-            color = (unsigned int) random();
-        }
-        else
-        {
-            color = random_near_color(color, 
-                                      RAND_COLOR_THRESHOLD,
-                                      RAND_COLOR_THRESHOLD,
-                                      RAND_COLOR_THRESHOLD);
-        }
 
         for(int i = 0; i < LED_COUNT; i++)
         {
-            unsigned int adj_color = random_near_color(color,
-                                                       RAND_COLOR_THRESHOLD * 3,
-                                                       RAND_COLOR_THRESHOLD * 3,
-                                                       RAND_COLOR_THRESHOLD * 3);
-            led_string->channel[0].leds[i] = adj_color;
+            led_string->channel[0].leds[i] = data->led_states[i];
         }
-
+        
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
             fprintf(stderr, "ws2811_render failed");

@@ -7,7 +7,8 @@ typedef enum PATTERN
 {
     NONE,
     PIANO_NORMAL,
-    PIANO_WAR
+    PIANO_WAR,
+    AMBIENT_NORMAL
 } PATTERN;
 
 typedef void (*led_pattern_function)(struct led_update_function_data *);
