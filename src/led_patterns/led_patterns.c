@@ -106,7 +106,10 @@ void led_update_piano_normal(led_update_function_data_t *data)
         }
         else
         {
-            color = random_near_color(pattern_data->last_color, 8, 8, 8);
+            color = random_near_color(data->piano_normal->last_color,
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD,
+                                      RAND_COLOR_THRESHOLD);
         }
 
         while(pipe_size((pipe_generic_t *) data->consumer) > 0)
@@ -144,7 +147,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
                 }
                 else
                 {
-                    pattern_data->sustain = 0;
+                    data->piano_normal->sustain = 0;
                 }
             }
 
@@ -200,8 +203,10 @@ void led_update_piano_war(led_update_function_data_t *data)
 
                 if(pattern_data->size[i])
                 {
-                    pattern_data->colors[i] = random_near_color(pattern_data->colors[i],
-                                                                32, 32, 32);
+                    data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                                                                   RAND_COLOR_THRESHOLD,
+                                                                   RAND_COLOR_THRESHOLD,
+                                                                   RAND_COLOR_THRESHOLD);
 
                     if(pattern_data->direction[i] == -1)
                     {
@@ -227,8 +232,10 @@ void led_update_piano_war(led_update_function_data_t *data)
 
                     if(pattern_data->size[i])
                     {
-                        pattern_data->colors[i] = random_near_color(
-                                pattern_data->colors[i], 32, 32, 32);
+                        data->piano_war->colors[i] = random_near_color(data->piano_war->colors[i],
+                                                                       RAND_COLOR_THRESHOLD,
+                                                                       RAND_COLOR_THRESHOLD,
+                                                                       RAND_COLOR_THRESHOLD);
 
                         if(pattern_data->direction[i] == -1)
                         {
