@@ -1,4 +1,4 @@
-project(piano_leds)
+project(smart_leds)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-lasound -lpthread -lm")
