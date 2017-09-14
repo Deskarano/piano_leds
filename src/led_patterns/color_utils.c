@@ -50,6 +50,17 @@ unsigned int color_from_channels(unsigned char r, unsigned char b, unsigned char
     return (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
 }
 
+unsigned int adjacent_color(unsigned int color, double factor)
+{
+    //extract individual channels and scale them by factor
+    double r = extract_red(color) * factor;
+    double b = extract_blue(color) * factor;
+    double g = extract_green(color) * factor;
+
+    return color_from_channels((unsigned char) r, (unsigned char) b, (unsigned char) g);
+}
+
+
 unsigned int normalize_color(unsigned int color, unsigned char max_intensity)
 {
     double r = extract_red(color);
@@ -63,18 +74,7 @@ unsigned int normalize_color(unsigned int color, unsigned char max_intensity)
     b *= max_intensity / max;
     g *= max_intensity / max;
 
-    return color_from_channels((unsigned char) r, (unsigned char) g, (unsigned char) b);
-}
-
-unsigned int adjacent_color(unsigned int color, double factor)
-{
-    //extract individual channels and scale them by factor
-    double r = (double) (color & 0xFF) * factor;
-    double b = (double) ((color >> 8) & 0xFF) * factor;
-    double g = (double) ((color >> 16) & 0xFF) * factor;
-
-    unsigned int ret = (((unsigned int) g) << 16) + (((unsigned int) b) << 8) + (unsigned int) r;
-    return ret;
+    return color_from_channels((unsigned char) r, (unsigned char) b, (unsigned char) g);
 }
 
 unsigned int random_near_color(unsigned int color, char dr_max, char db_max, char dg_max)
@@ -117,5 +117,5 @@ unsigned int random_near_color(unsigned int color, char dr_max, char db_max, cha
         g -= dg;
     }
 
-    return color_from_channels(r, g, b);
+    return color_from_channels(r, b, g);
 }
