@@ -11,7 +11,6 @@ typedef struct led_update_piano_ambient_data
     unsigned int last_color;      /**< The last color used by the led_update_piano_normal function*/
 } led_update_piano_ambient_data_t;
 
-void *new_led_update_ambient_normal_data_t()
 typedef struct led_update_piano_gradient_data
 {
     unsigned int left_color;
@@ -70,5 +69,5 @@ void led_update_ambient_gradient(led_update_function_data_t *data)
     unsigned int right_color = ((led_update_ambient_gradient_data_t *) data->pattern_data)->right_color;
 
     double slope_r = ((double)(right_color & 0xFF) - (double)(left_color & 0xFF)) / LED_COUNT;
-    double slope_b = ((double)((right_color& 0xFF) << ) - (double)(left_color)) / LED_COUNT;
+    double slope_b = ((double)((right_color& 0xFF) << 8) - (double)(left_color)) / LED_COUNT;
 }
