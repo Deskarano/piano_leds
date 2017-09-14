@@ -11,7 +11,8 @@ typedef enum PATTERN
     NONE,
     PIANO_NORMAL,
     PIANO_WAR,
-    AMBIENT_NORMAL
+    AMBIENT_NORMAL,
+    AMBIENT_GRADIENT
 } Pattern;
 
 /**

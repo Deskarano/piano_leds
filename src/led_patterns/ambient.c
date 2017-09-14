@@ -12,6 +12,13 @@ typedef struct led_update_piano_ambient_data
 } led_update_piano_ambient_data_t;
 
 void *new_led_update_ambient_normal_data_t()
+typedef struct led_update_piano_gradient_data
+{
+    unsigned int left_color;
+    unsigned int right_color;
+} led_update_ambient_gradient_data_t;
+
+void *new_led_update_ambient_normal_data_t()
 {
     led_update_piano_ambient_data_t *ret = malloc(sizeof(led_update_piano_ambient_data_t));
 
@@ -19,6 +26,11 @@ void *new_led_update_ambient_normal_data_t()
     ret->last_color = 0;
     
     return ret;
+}
+
+void *new_led_update_ambient_gradient_data_t()
+{
+
 }
 
 void led_update_ambient_normal(led_update_function_data_t *data)
@@ -50,4 +62,13 @@ void led_update_ambient_normal(led_update_function_data_t *data)
         //copy color to led_states[]
         data->led_states[i] = adj_color;
     }
+}
+
+void led_update_ambient_gradient(led_update_function_data_t *data)
+{
+    unsigned int left_color = ((led_update_ambient_gradient_data_t *) data->pattern_data)->left_color;
+    unsigned int right_color = ((led_update_ambient_gradient_data_t *) data->pattern_data)->right_color;
+
+    double slope_r = ((double)(right_color & 0xFF) - (double)(left_color & 0xFF)) / LED_COUNT;
+    double slope_b = ((double)((right_color& 0xFF) << ) - (double)(left_color)) / LED_COUNT;
 }
