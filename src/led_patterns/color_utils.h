@@ -1,9 +1,38 @@
 #ifndef SMART_LEDS_LED_PATTERNS_COLOR_UTILS_H
 #define SMART_LEDS_LED_PATTERNS_COLOR_UTILS_H
 
+/**
+ * Returns the red channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The red channel value
+ */
 unsigned char extract_red(unsigned int color);
+
+/**
+ * Returns the blue channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The blue channel value
+ */
 unsigned char extract_blue(unsigned int color);
+
+/**
+ * Returns the green channel from the specified color
+ *
+ * @param color The color to analyze
+ * @return The green channel value
+ */
 unsigned char extract_green(unsigned int color);
+
+/**
+ * Turns individual color channels back into one color value
+ *
+ * @param r The red channel value
+ * @param b The blue channel value
+ * @param g The green channel value
+ * @return The complete color
+ */
 unsigned int color_from_channels(unsigned char r, unsigned char b, unsigned char g);
 
 /**
