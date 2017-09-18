@@ -9,10 +9,21 @@ led_update_function_data_t *new_led_update_function_data_t()
     //set up all values to defaults
     ret->current_pattern = NONE;
     ret->last_pattern = NONE;
+    ret->current_update_function = NULL;
     ret->pattern_data = NULL;
+    ret->led_states = malloc(LED_COUNT * sizeof(unsigned int));
+    ret->buffer = malloc(2 * sizeof(unsigned char));
     ret->data_pipe = NULL;
 
     return ret;
+}
+
+void free_led_update_function_data_t(led_update_function_data_t *data)
+{
+    set_data_for_pattern(data, NONE);
+    free(data->led_states);
+    free(data->buffer);
+    free(data);
 }
 
 void run_led_update_function(led_update_function_data_t *data)

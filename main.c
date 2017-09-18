@@ -3,10 +3,10 @@
 #include <pthread.h>
 
 #include "src/globals.h"
-#include "src/led_patterns/piano.h"
-#include "src/led_patterns/utils.h"
 #include "src/rpi_ws281x/ws2811.h"
 #include "src/pipe/pipe.h"
+#include "src/led_patterns/core.h"
+#include "src/led_patterns/utils.h"
 
 typedef struct midi_collector_thread_arg
 {
@@ -53,6 +53,8 @@ int main()
     if(snd_rawmidi_open(&midi_in, NULL, "hw:1,0,0", SND_RAWMIDI_SYNC) < 0)
     {
         fprintf(stderr, "snd_rawmidi_open failed");
+        pipe_producer_free(producer);
+        pipe_consumer_free(consumer);
         exit(1);
     }
 
@@ -78,6 +80,11 @@ int main()
     if(ws2811_init(led_string) != WS2811_SUCCESS)
     {
         fprintf(stderr, "ws2811_init failed");
+        pipe_producer_free(producer);
+        pipe_consumer_free(consumer);
+        free(midi_collector_thread);
+        free(midi_thread_handle);
+        free(led_string);
         exit(1);
     }
 
@@ -102,7 +109,12 @@ int main()
         if(ws2811_render(led_string) != WS2811_SUCCESS)
         {
             fprintf(stderr, "ws2811_render failed");
+            pipe_producer_free(producer);
             pipe_consumer_free(consumer);
+            free(midi_collector_thread);
+            free(midi_thread_handle);
+            free(led_string);
+            free_led_update_function_data_t(data);
             exit(1);
         }
 

@@ -12,6 +12,9 @@ void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
         data->led_states[i] = 0;
     }
 
+    data->buffer[0] = 0;
+    data->buffer[1] = 0;
+
     //free up memory if we can
     if(data->pattern_data != NULL) free(data->pattern_data);
 
