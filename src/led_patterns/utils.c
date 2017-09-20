@@ -22,7 +22,12 @@ void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
             break;
 
         case PIANO_NORMAL:
+            free_led_update_piano_normal_data_t(data->pattern_data);
+            break;
 
+        case PIANO_WAR:
+            free_led_update_piano_war_data_t(data->pattern_data);
+            break;
     }
 
     //switch through patterns and set up the one that matches
