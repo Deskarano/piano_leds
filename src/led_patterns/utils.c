@@ -15,8 +15,15 @@ void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
     data->buffer[0] = 0;
     data->buffer[1] = 0;
 
-    //free up memory if we can
-    if(data->pattern_data != NULL) free(data->pattern_data);
+    //free memory if possible
+    switch(data->current_pattern)
+    {
+        case NONE:
+            break;
+
+        case PIANO_NORMAL:
+
+    }
 
     //switch through patterns and set up the one that matches
     switch(pattern)

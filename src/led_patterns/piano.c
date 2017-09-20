@@ -9,12 +9,12 @@
  */
 typedef struct led_update_piano_normal_data
 {
-    int key_pressed[LED_COUNT];         /**< Array storing whether a given piano key is pressed or not */
-    int key_sustain[LED_COUNT];         /**< Array storing whether to sustain a given key or not */
+    int *key_pressed;           /**< Array storing whether a given piano key is pressed or not */
+    int *key_sustain;           /**< Array storing whether to sustain a given key or not */
 
-    int sustain;                        /**< Only ever 1 or 0. Indicates if the sustain pedal is pressed or not */
+    int sustain;                /**< Only ever 1 or 0. Indicates if the sustain pedal is pressed or not */
 
-    unsigned int last_color;            /**< The last color used by the led_update_piano_normal function*/
+    unsigned int last_color;    /**< The last color used by the led_update_piano_normal function*/
 } led_update_piano_normal_data_t;
 
 /**
@@ -22,16 +22,18 @@ typedef struct led_update_piano_normal_data
  */
 typedef struct led_update_piano_war_data
 {
-    int occupied[LED_COUNT];            /**< Array storing whether a given LED is occupied */
-    unsigned int colors[LED_COUNT];     /**< Array storing current colors of all LEDs */
-    int direction[LED_COUNT];           /**< Array storing which direction a given LED is "traveling" in */
-    int size[LED_COUNT];                /**< Array storing the size of a given LED */
-    int locked[LED_COUNT];              /**< Array controlling locking and unlocking of LEDs */
+    int *occupied;           /**< Array storing whether a given LED is occupied */
+    unsigned int *colors;    /**< Array storing current colors of all LEDs */
+    int *direction;          /**< Array storing which direction a given LED is "traveling" in */
+    int *size;               /**< Array storing the size of a given LED */
+    int *locked              /**< Array controlling locking and unlocking of LEDs */
 } led_update_piano_war_data_t;
 
 void *new_led_update_piano_normal_data_t()
 {
     led_update_piano_normal_data_t *ret = malloc(sizeof(led_update_piano_normal_data_t));
+    ret->key_pressed = malloc(LED_COUNT * sizeof(int));
+    ret->key_sustain = malloc(LED_COUNT * sizeof(int));
 
     //initialize everything to 0
     for(int i = 0; i < LED_COUNT; i++)
@@ -46,9 +48,21 @@ void *new_led_update_piano_normal_data_t()
     return ret;
 }
 
+void free_led_update_piano_normal_data_t(void *data)
+{
+    free(((led_update_piano_normal_data_t *) data)->key_pressed);
+    free(((led_update_piano_normal_data_t *) data)->key_sustain);
+    free(data);
+}
+
 void *new_led_update_piano_war_data_t()
 {
     led_update_piano_war_data_t *ret = malloc(sizeof(led_update_piano_war_data_t));
+    ret->occupied = malloc(LED_COUNT * sizeof(int));
+    ret->colors = malloc(LED_COUNT * sizeof(unsigned int));
+    ret->direction = malloc(LED_COUNT * sizeof(int));
+    ret->size = malloc(LED_COUNT * sizeof(int));
+    ret->locked = malloc(LED_COUNT * sizeof(int));
 
     //initialize everything to 0
     for(int i = 0; i < LED_COUNT; i++)
@@ -61,6 +75,16 @@ void *new_led_update_piano_war_data_t()
     }
 
     return ret;
+}
+
+void free_led_update_piano_war_data_t(void *data)
+{
+    free(((led_update_piano_war_data_t *) data)->occupied);
+    free(((led_update_piano_war_data_t *) data)->colors);
+    free(((led_update_piano_war_data_t *) data)->direction);
+    free(((led_update_piano_war_data_t *) data)->size);
+    free(((led_update_piano_war_data_t *) data)->locked);
+    free(data);
 }
 
 void led_update_piano_normal(led_update_function_data_t *data)
@@ -115,13 +139,16 @@ void led_update_piano_normal(led_update_function_data_t *data)
             {
                 pipe_pop(data->data_pipe, data->buffer, 2);
 
-                if(data->buffer[1] > 0)
+                if(data->buffer[0] == 64)
                 {
-                    pattern_data->sustain = 1;
-                }
-                else
-                {
-                    pattern_data->sustain = 0;
+                    if(data->buffer[1] > 0)
+                    {
+                        pattern_data->sustain = 1;
+                    }
+                    else
+                    {
+                        pattern_data->sustain = 0;
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@
  * @return A pointer to the new led_update_piano_normal_data_t
  */
 void *new_led_update_piano_normal_data_t();
+void free_led_update_piano_normal_data_t(void *data);
 
 /**
  * Function to create and initialize a new led_update_piano_war_data_t
@@ -16,6 +17,7 @@ void *new_led_update_piano_normal_data_t();
  * @return A pointer to the new led_update_piano_war_data_t
  */
 void *new_led_update_piano_war_data_t();
+void free_led_update_piano_war_data_t(void *data);
 
 /**
  * The normal piano-enabled LED update function. Each key lights up one specific LED
