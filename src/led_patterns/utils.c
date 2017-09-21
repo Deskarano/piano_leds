@@ -28,6 +28,14 @@ void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)
         case PIANO_WAR:
             free_led_update_piano_war_data_t(data->pattern_data);
             break;
+
+        case AMBIENT_NORMAL:
+            free_led_update_ambient_normal_data_t(data->pattern_data);
+            break;
+
+        case AMBIENT_GRADIENT:
+            free_led_update_ambient_gradient_data_t(data->pattern_data);
+            break;
     }
 
     //switch through patterns and set up the one that matches

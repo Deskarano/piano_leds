@@ -10,12 +10,16 @@
  */
 void *new_led_update_ambient_normal_data_t();
 
+void free_led_update_ambient_normal_data_t(void *data);
+
 /**
  * Function to create and initialize a new led_update_ambient_gradient_data_t
  *
  * @return A pointer to the new led_update_ambient_gradient_data_t
  */
 void *new_led_update_ambient_gradient_data_t();
+
+void free_led_update_ambient_gradient_data_t(void *data);
 
 /**
  * The normal ambient LED function. Gently changes color of the entire strip over time

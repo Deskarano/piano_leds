@@ -9,8 +9,8 @@
 typedef struct led_update_piano_ambient_data
 {
     unsigned int last_color;      /**< The last color used by the led_update_piano_normal function*/
-    double factors[LED_COUNT];
-} led_update_piano_ambient_data_t;
+    double *factors;
+} led_update_ambient_normal_data_t;
 
 typedef struct led_update_piano_gradient_data
 {
@@ -20,7 +20,8 @@ typedef struct led_update_piano_gradient_data
 
 void *new_led_update_ambient_normal_data_t()
 {
-    led_update_piano_ambient_data_t *ret = malloc(sizeof(led_update_piano_ambient_data_t));
+    led_update_ambient_normal_data_t *ret = malloc(sizeof(led_update_ambient_normal_data_t));
+    ret->factors = malloc(LED_COUNT * sizeof(double));
 
     //set everything to 0
     ret->last_color = 0;
@@ -31,6 +32,12 @@ void *new_led_update_ambient_normal_data_t()
     }
 
     return ret;
+}
+
+void free_led_update_ambient_normal_data_t(void *data)
+{
+    free(((led_update_ambient_normal_data_t *) data)->factors);
+    free(data);
 }
 
 void *new_led_update_ambient_gradient_data_t()
@@ -44,10 +51,15 @@ void *new_led_update_ambient_gradient_data_t()
     return ret;
 }
 
+void free_led_update_ambient_gradient_data_t(void *data)
+{
+    free(data);
+}
+
 void led_update_ambient_normal(led_update_function_data_t *data)
 {
-    unsigned int color = ((led_update_piano_ambient_data_t *) data->pattern_data)->last_color;
-    double *factors = ((led_update_piano_ambient_data_t *) data->pattern_data)->factors;
+    unsigned int color = ((led_update_ambient_normal_data_t *) data->pattern_data)->last_color;
+    double *factors = ((led_update_ambient_normal_data_t *) data->pattern_data)->factors;
 
     if(color == 0)
     {
@@ -72,7 +84,7 @@ void led_update_ambient_normal(led_update_function_data_t *data)
         data->led_states[i] = adj_color;
     }
 
-    ((led_update_piano_ambient_data_t *) data->pattern_data)->last_color = color;
+    ((led_update_ambient_normal_data_t *) data->pattern_data)->last_color = color;
 }
 
 void led_update_ambient_gradient(led_update_function_data_t *data)

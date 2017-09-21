@@ -9,6 +9,7 @@
  * @return A pointer to the new led_update_piano_normal_data_t
  */
 void *new_led_update_piano_normal_data_t();
+
 void free_led_update_piano_normal_data_t(void *data);
 
 /**
@@ -17,6 +18,7 @@ void free_led_update_piano_normal_data_t(void *data);
  * @return A pointer to the new led_update_piano_war_data_t
  */
 void *new_led_update_piano_war_data_t();
+
 void free_led_update_piano_war_data_t(void *data);
 
 /**
