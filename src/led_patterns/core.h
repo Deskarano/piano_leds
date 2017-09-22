@@ -1,8 +1,6 @@
 #ifndef SMART_LEDS_LED_PATTERNS_CORE_H
 #define SMART_LEDS_LED_PATTERNS_CORE_H
 
-#include "../globals.h"
-
 /**
  * Defined LED patterns
  */

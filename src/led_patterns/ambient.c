@@ -1,6 +1,8 @@
 #include "ambient.h"
 #include "color_utils.h"
 
+#include "../globals.h"
+
 #include <stdlib.h>
 
 /**

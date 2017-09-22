@@ -82,7 +82,7 @@ int main()
         fprintf(stderr, "ws2811_init failed");
         pipe_producer_free(producer);
         pipe_consumer_free(consumer);
-        free(midi_collector_thread);
+        free(arg);
         free(midi_thread_handle);
         free(led_string);
         exit(1);
@@ -111,7 +111,7 @@ int main()
             fprintf(stderr, "ws2811_render failed");
             pipe_producer_free(producer);
             pipe_consumer_free(consumer);
-            free(midi_collector_thread);
+            free(arg);
             free(midi_thread_handle);
             free(led_string);
             free_led_update_function_data_t(data);

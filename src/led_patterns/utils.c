@@ -2,6 +2,8 @@
 #include "piano.h"
 #include "ambient.h"
 
+#include "../globals.h"
+
 #include <stdlib.h>
 
 void set_data_for_pattern(led_update_function_data_t *data, Pattern pattern)

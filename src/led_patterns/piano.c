@@ -2,6 +2,8 @@
 #include "color_utils.h"
 #include "../pipe/pipe.h"
 
+#include "../globals.h"
+
 #include <stdlib.h>
 
 /**
@@ -26,11 +28,12 @@ typedef struct led_update_piano_war_data
     unsigned int *colors;    /**< Array storing current colors of all LEDs */
     int *direction;          /**< Array storing which direction a given LED is "traveling" in */
     int *size;               /**< Array storing the size of a given LED */
-    int *locked              /**< Array controlling locking and unlocking of LEDs */
+    int *locked;             /**< Array controlling locking and unlocking of LEDs */
 } led_update_piano_war_data_t;
 
 void *new_led_update_piano_normal_data_t()
 {
+    //allocate memory
     led_update_piano_normal_data_t *ret = malloc(sizeof(led_update_piano_normal_data_t));
     ret->key_pressed = malloc(LED_COUNT * sizeof(int));
     ret->key_sustain = malloc(LED_COUNT * sizeof(int));
@@ -50,6 +53,7 @@ void *new_led_update_piano_normal_data_t()
 
 void free_led_update_piano_normal_data_t(void *data)
 {
+    //free all used memory
     free(((led_update_piano_normal_data_t *) data)->key_pressed);
     free(((led_update_piano_normal_data_t *) data)->key_sustain);
     free(data);
@@ -57,6 +61,7 @@ void free_led_update_piano_normal_data_t(void *data)
 
 void *new_led_update_piano_war_data_t()
 {
+    //allocate memory
     led_update_piano_war_data_t *ret = malloc(sizeof(led_update_piano_war_data_t));
     ret->occupied = malloc(LED_COUNT * sizeof(int));
     ret->colors = malloc(LED_COUNT * sizeof(unsigned int));
@@ -79,6 +84,7 @@ void *new_led_update_piano_war_data_t()
 
 void free_led_update_piano_war_data_t(void *data)
 {
+    //free all used memory
     free(((led_update_piano_war_data_t *) data)->occupied);
     free(((led_update_piano_war_data_t *) data)->colors);
     free(((led_update_piano_war_data_t *) data)->direction);
@@ -109,6 +115,7 @@ void led_update_piano_normal(led_update_function_data_t *data)
                                       RAND_COLOR_THRESHOLD);
         }
 
+        //add LEDs if there are new ones
         while(pipe_size((pipe_generic_t *) data->data_pipe) > 0)
         {
             pipe_pop(data->data_pipe, data->buffer, 1);

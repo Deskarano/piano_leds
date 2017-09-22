@@ -10,6 +10,10 @@
  */
 void *new_led_update_piano_normal_data_t();
 
+/**
+ * Frees all memory used by a given led_update_piano_normal_data_t
+ * @param data The led_update_piano_normal_data_t to free
+ */
 void free_led_update_piano_normal_data_t(void *data);
 
 /**
@@ -19,6 +23,10 @@ void free_led_update_piano_normal_data_t(void *data);
  */
 void *new_led_update_piano_war_data_t();
 
+/**
+ * Frees all memory used by a given led_update_piano_war_data_t
+ * @param data The led_update_piano_war_data_t to free
+ */
 void free_led_update_piano_war_data_t(void *data);
 
 /**
