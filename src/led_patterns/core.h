@@ -29,7 +29,8 @@ typedef void (*led_pattern_function)(struct led_update_function_data *);
 typedef struct led_update_function_data
 {
     Pattern current_pattern;                         /**< The current LED pattern to run */
-    Pattern last_pattern;
+    Pattern last_pattern;                            /**< The last LED pattern that was run, to detect when the
+ *                                                        pattern changes*/
 
     led_pattern_function current_update_function;    /**< The current LED update function */
 
@@ -43,11 +44,15 @@ typedef struct led_update_function_data
 
 /**
  * Function which generates and initializes new led_update_function_data_t structs
- * @return
+ * @return A pointer to the new led_update_function_data_t struct
  */
 led_update_function_data_t *new_led_update_function_data_t();
 
-void free_led_update_function_data_t(led_update_function_data_t *);
+/**
+ * Function which frees all memory used by an led_update_function_data_t
+ * @param data A pointer to the led_update_function_data_t to free
+ */
+void free_led_update_function_data_t(led_update_function_data_t *data);
 
 /**
  * Function which takes an led_update_function_data_t and runs the LED pattern specified by it

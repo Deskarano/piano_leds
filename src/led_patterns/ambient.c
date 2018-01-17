@@ -11,17 +11,18 @@
 typedef struct led_update_piano_ambient_data
 {
     unsigned int last_color;      /**< The last color used by the led_update_piano_normal function*/
-    double *factors;
+    double *factors;              /**< Some random factors to change the color by */
 } led_update_ambient_normal_data_t;
 
 typedef struct led_update_piano_gradient_data
 {
-    unsigned int left_color;
-    unsigned int right_color;
+    unsigned int left_color;    /**< The color to the left of the gradient */
+    unsigned int right_color;   /**< The color to the right of the gradient */
 } led_update_ambient_gradient_data_t;
 
 void *new_led_update_ambient_normal_data_t()
 {
+    //allocate memory
     led_update_ambient_normal_data_t *ret = malloc(sizeof(led_update_ambient_normal_data_t));
     ret->factors = malloc(LED_COUNT * sizeof(double));
 
